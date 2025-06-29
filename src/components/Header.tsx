@@ -1,10 +1,14 @@
+
 import { Link } from 'react-router-dom';
-import { Search, User, Menu } from 'lucide-react';
+import { Search, User, Menu, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUser } from '@/contexts/UserContext';
 import CartDrawer from './CartDrawer';
 
 const Header = () => {
+  const { isOwner } = useUser();
+
   return (
     <>
       {/* Top Bar */}
@@ -53,6 +57,14 @@ const Header = () => {
                 <User className="w-4 h-4 mr-2" />
                 Mi cuenta
               </Button>
+              {isOwner() && (
+                <Link to="/admin">
+                  <Button variant="ghost" size="sm" className="hidden md:flex">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
               <CartDrawer />
               <Button variant="ghost" size="sm" className="md:hidden">
                 <Menu className="w-4 h-4" />
