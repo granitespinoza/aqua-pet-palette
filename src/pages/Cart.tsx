@@ -13,26 +13,22 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useCart } from '@/contexts/CartContext';
+import { useUser } from '@/contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '@/lib/formatPrice';
 import products from '@/data/products.json';
+import AuthModal from '@/components/AuthModal';
 
 const Cart = () => {
   const { items, incrementItem, decrementItem, removeItem, clearCart, getTotalItems } = useCart();
+  const { user } = useUser();
   const navigate = useNavigate();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const cartProducts = items.map(item => {
     const product = products.find(p => p.id === item.id);
     return product ? { ...product, quantity: item.quantity } : null;
   }).filter(Boolean);
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(price);
-  };
 
   const getSubtotal = () => {
     return cartProducts.reduce((total, item) => {
@@ -43,7 +39,7 @@ const Cart = () => {
   };
 
   const subtotal = getSubtotal();
-  const shipping = subtotal >= 100000 ? 0 : 10000; // Envío gratis si subtotal >= $100.000
+  const shipping = subtotal >= 100 ? 0 : 10; // Envío gratis si subtotal >= S/ 100.00
   const total = subtotal + shipping;
 
   const handleQuantityChange = (productId: number, newQuantity: string) => {
@@ -62,6 +58,14 @@ const Cart = () => {
           }
         }
       }
+    }
+  };
+
+  const handleCheckout = () => {
+    if (!user) {
+      setAuthModalOpen(true);
+    } else {
+      navigate('/checkout');
     }
   };
 
@@ -294,7 +298,7 @@ const Cart = () => {
                   
                   {shipping > 0 && (
                     <p className="text-xs text-gray-500">
-                      Envío gratis en compras sobre {formatPrice(100000)}
+                      Envío gratis en compras sobre {formatPrice(100)}
                     </p>
                   )}
                   
@@ -305,7 +309,10 @@ const Cart = () => {
                     <span className="text-primary">{formatPrice(total)}</span>
                   </div>
                   
-                  <Button className="w-full bg-primary hover:bg-blue-700 text-white py-3">
+                  <Button
+                    onClick={handleCheckout}
+                    className="w-full bg-primary hover:bg-blue-700 text-white py-3"
+                  >
                     Pagar 💳
                   </Button>
                   
@@ -321,6 +328,13 @@ const Cart = () => {
             </div>
           </div>
         </div>
+
+        <AuthModal
+          open={authModalOpen}
+          onOpenChange={setAuthModalOpen}
+          nextRoute="/checkout"
+          message="Inicia sesión para finalizar tu compra"
+        />
       </div>
     </div>
   );

@@ -1,13 +1,28 @@
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, User, Menu, Settings } from 'lucide-react';
+import { Search, User, Menu, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useUser } from '@/contexts/UserContext';
 import CartDrawer from './CartDrawer';
+import AuthModal from './AuthModal';
 
 const Header = () => {
-  const { isOwner } = useUser();
+  const { user, isOwner, logout } = useUser();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const handleAuthClick = () => {
+    if (!user) {
+      setAuthModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -16,11 +31,21 @@ const Header = () => {
         <div className="container mx-auto px-4 py-2">
           <div className="flex justify-between items-center text-sm">
             <div className="text-primary font-medium">
-              🐾 Envío gratis desde $100.000
+              🐾 Envío gratis desde S/ 100.00
             </div>
             <div className="hidden md:flex items-center space-x-4 text-gray-600">
-              <span>📞 +56 9 1234 5678</span>
-              <span>📧 hola@gopet.cl</span>
+              <span>📞 +51 9 1234 5678</span>
+              <span>📧 hola@gopet.pe</span>
+              {!user && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleAuthClick}
+                  className="text-primary hover:text-blue-700"
+                >
+                  Recibir <span className="ml-1">›</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -53,10 +78,28 @@ const Header = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="hidden md:flex">
-                <User className="w-4 h-4 mr-2" />
-                Mi cuenta
-              </Button>
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="hidden md:flex">
+                      <User className="w-4 h-4 mr-2" />
+                      👤 {user.profile?.nombre || user.email.split('@')[0]}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={logout}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Cerrar sesión
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button variant="ghost" size="sm" className="hidden md:flex" onClick={handleAuthClick}>
+                  <User className="w-4 h-4 mr-2" />
+                  Mi cuenta
+                </Button>
+              )}
+              
               {isOwner() && (
                 <Link to="/admin">
                   <Button variant="ghost" size="sm" className="hidden md:flex">
@@ -111,6 +154,11 @@ const Header = () => {
           </div>
         </nav>
       </header>
+
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+      />
     </>
   );
 };
