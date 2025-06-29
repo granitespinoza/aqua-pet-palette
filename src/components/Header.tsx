@@ -1,8 +1,8 @@
-
 import { Link } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu } from 'lucide-react';
+import { Search, User, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import CartDrawer from './CartDrawer';
 
 const Header = () => {
   return (
@@ -12,7 +12,7 @@ const Header = () => {
         <div className="container mx-auto px-4 py-2">
           <div className="flex justify-between items-center text-sm">
             <div className="text-primary font-medium">
-              🐾 Envío gratis desde $50.000
+              🐾 Envío gratis desde $100.000
             </div>
             <div className="hidden md:flex items-center space-x-4 text-gray-600">
               <span>📞 +56 9 1234 5678</span>
@@ -53,12 +53,7 @@ const Header = () => {
                 <User className="w-4 h-4 mr-2" />
                 Mi cuenta
               </Button>
-              <Button variant="ghost" size="sm" className="relative">
-                <ShoppingCart className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 bg-secondary text-primary text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                  0
-                </span>
-              </Button>
+              <CartDrawer />
               <Button variant="ghost" size="sm" className="md:hidden">
                 <Menu className="w-4 h-4" />
               </Button>
