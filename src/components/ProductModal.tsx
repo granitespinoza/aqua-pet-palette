@@ -1,130 +1,74 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AdminProduct } from '@/hooks/useAdminProducts';
-import brandsData from '@/data/brands.json';
-import categoriesData from '@/data/categories.json';
+import { Product } from '@/hooks/useFilteredProducts';
+import brands from '@/data/brands.json';
+import categories from '@/data/categories.json';
 
 interface ProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (productData: Omit<AdminProduct, 'id' | 'deleted'>) => void;
-  product?: AdminProduct | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  product?: Product | null;
+  onSave: (productData: any) => void;
 }
 
-const ProductModal = ({ isOpen, onClose, onSave, product }: ProductModalProps) => {
+const ProductModal = ({ open, onOpenChange, product, onSave }: ProductModalProps) => {
   const [formData, setFormData] = useState({
     nombre: '',
-    marcaId: 1,
-    categoriaId: 'perros',
-    precio: 0,
-    precioOferta: null as number | null,
-    descuento: 0,
-    img: '',
-    is_featured: false
+    marcaId: '',
+    categoriaId: '',
+    precio: '',
+    precioOferta: '',
+    descuento: '',
+    img: ''
   });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (product) {
       setFormData({
-        nombre: product.nombre,
-        marcaId: product.marcaId,
-        categoriaId: product.categoriaId,
-        precio: product.precio,
-        precioOferta: product.precioOferta,
-        descuento: product.descuento,
-        img: product.img,
-        is_featured: product.is_featured
+        nombre: product.nombre || '',
+        marcaId: product.marcaId?.toString() || '',
+        categoriaId: product.categoriaId || '',
+        precio: product.precio?.toString() || '',
+        precioOferta: product.precioOferta?.toString() || '',
+        descuento: product.descuento?.toString() || '',
+        img: product.img || ''
       });
     } else {
       setFormData({
         nombre: '',
-        marcaId: 1,
-        categoriaId: 'perros',
-        precio: 0,
-        precioOferta: null,
-        descuento: 0,
-        img: '',
-        is_featured: false
+        marcaId: '',
+        categoriaId: '',
+        precio: '',
+        precioOferta: '',
+        descuento: '',
+        img: ''
       });
     }
-    setErrors({});
-  }, [product, isOpen]);
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.nombre || formData.nombre.length < 4) {
-      newErrors.nombre = 'El nombre debe tener al menos 4 caracteres';
-    }
-
-    if (formData.precio <= 0) {
-      newErrors.precio = 'El precio debe ser mayor a 0';
-    }
-
-    if (formData.precioOferta && formData.precioOferta > formData.precio) {
-      newErrors.precioOferta = 'El precio de oferta no puede ser mayor al precio regular';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  }, [product, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      return;
-    }
-
     const productData = {
       ...formData,
-      img: formData.img || 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop&crop=center'
+      precio: parseFloat(formData.precio) || 0,
+      precioOferta: formData.precioOferta ? parseFloat(formData.precioOferta) : null,
+      descuento: parseInt(formData.descuento) || 0,
+      marcaId: parseInt(formData.marcaId) || 1
     };
 
     onSave(productData);
-    onClose();
-  };
-
-  const handlePriceChange = (field: 'precio' | 'precioOferta', value: string) => {
-    const numValue = parseFloat(value) || 0;
-    
-    if (field === 'precio') {
-      const newPrecio = numValue;
-      const newPrecioOferta = formData.precioOferta;
-      const newDescuento = newPrecioOferta && newPrecio > 0 
-        ? Math.round(((newPrecio - newPrecioOferta) / newPrecio) * 100)
-        : 0;
-      
-      setFormData(prev => ({
-        ...prev,
-        precio: newPrecio,
-        descuento: newDescuento
-      }));
-    } else {
-      const newPrecioOferta = numValue || null;
-      const newDescuento = newPrecioOferta && formData.precio > 0
-        ? Math.round(((formData.precio - newPrecioOferta) / formData.precio) * 100)
-        : 0;
-      
-      setFormData(prev => ({
-        ...prev,
-        precioOferta: newPrecioOferta,
-        descuento: newDescuento
-      }));
-    }
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
             {product ? 'Editar Producto' : 'Nuevo Producto'}
@@ -132,104 +76,91 @@ const ProductModal = ({ isOpen, onClose, onSave, product }: ProductModalProps) =
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
-              <Label htmlFor="nombre">Nombre del Producto</Label>
-              <Input
-                id="nombre"
-                value={formData.nombre}
-                onChange={(e) => setFormData(prev => ({ ...prev, nombre: e.target.value }))}
-                className={errors.nombre ? 'border-red-500' : ''}
-              />
-              {errors.nombre && <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>}
-            </div>
+          <div>
+            <Label htmlFor="nombre">Nombre *</Label>
+            <Input
+              id="nombre"
+              value={formData.nombre}
+              onChange={(e) => setFormData(prev => ({ ...prev, nombre: e.target.value }))}
+              required
+              minLength={4}
+            />
+          </div>
 
-            <div>
-              <Label htmlFor="marca">Marca</Label>
-              <Select value={formData.marcaId.toString()} onValueChange={(value) => setFormData(prev => ({ ...prev, marcaId: parseInt(value) }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {brandsData.map((brand) => (
-                    <SelectItem key={brand.id} value={brand.id.toString()}>
-                      {brand.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="marca">Marca</Label>
+            <Select value={formData.marcaId} onValueChange={(value) => setFormData(prev => ({ ...prev, marcaId: value }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar marca" />
+              </SelectTrigger>
+              <SelectContent>
+                {brands.map((brand) => (
+                  <SelectItem key={brand.id} value={brand.id.toString()}>
+                    {brand.nombre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div>
-              <Label htmlFor="categoria">Categoría</Label>
-              <Select value={formData.categoriaId} onValueChange={(value) => setFormData(prev => ({ ...prev, categoriaId: value }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoriesData.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="categoria">Categoría</Label>
+            <Select value={formData.categoriaId} onValueChange={(value) => setFormData(prev => ({ ...prev, categoriaId: value }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.nombre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
+          <div className="grid grid-cols-2 gap-2">
             <div>
-              <Label htmlFor="precio">Precio Regular (S/)</Label>
+              <Label htmlFor="precio">Precio *</Label>
               <Input
                 id="precio"
                 type="number"
                 step="0.01"
-                min="0"
+                min="0.01"
                 value={formData.precio}
-                onChange={(e) => handlePriceChange('precio', e.target.value)}
-                className={errors.precio ? 'border-red-500' : ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, precio: e.target.value }))}
+                required
               />
-              {errors.precio && <p className="text-red-500 text-sm mt-1">{errors.precio}</p>}
             </div>
-
             <div>
-              <Label htmlFor="precioOferta">Precio Oferta (S/)</Label>
+              <Label htmlFor="precioOferta">Precio Oferta</Label>
               <Input
                 id="precioOferta"
                 type="number"
                 step="0.01"
                 min="0"
-                value={formData.precioOferta || ''}
-                onChange={(e) => handlePriceChange('precioOferta', e.target.value)}
-                className={errors.precioOferta ? 'border-red-500' : ''}
-                placeholder="Opcional"
-              />
-              {errors.precioOferta && <p className="text-red-500 text-sm mt-1">{errors.precioOferta}</p>}
-            </div>
-
-            <div className="md:col-span-2">
-              <Label htmlFor="img">URL de Imagen</Label>
-              <Input
-                id="img"
-                value={formData.img}
-                onChange={(e) => setFormData(prev => ({ ...prev, img: e.target.value }))}
-                placeholder="https://ejemplo.com/imagen.jpg"
+                value={formData.precioOferta}
+                onChange={(e) => setFormData(prev => ({ ...prev, precioOferta: e.target.value }))}
               />
             </div>
+          </div>
 
-            {formData.descuento > 0 && (
-              <div className="md:col-span-2">
-                <p className="text-sm text-gray-600">
-                  Descuento calculado: <span className="font-semibold text-green-600">{formData.descuento}%</span>
-                </p>
-              </div>
-            )}
+          <div>
+            <Label htmlFor="img">URL Imagen</Label>
+            <Input
+              id="img"
+              value={formData.img}
+              onChange={(e) => setFormData(prev => ({ ...prev, img: e.target.value }))}
+              placeholder="https://..."
+            />
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit">
-              {product ? 'Actualizar' : 'Crear'} Producto
+              {product ? 'Actualizar' : 'Crear'}
             </Button>
           </div>
         </form>

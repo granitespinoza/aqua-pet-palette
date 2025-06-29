@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
+import { formatPrice } from '@/lib/formatPrice';
 import products from '@/data/products.json';
 import brands from '@/data/brands.json';
 
@@ -38,15 +39,6 @@ const ProductDetail = () => {
       </div>
     );
   }
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(price);
-  };
 
   const handleAddToCart = () => {
     addItem(product.id, quantity);

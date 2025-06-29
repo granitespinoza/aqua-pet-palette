@@ -1,9 +1,8 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, User, Menu, Settings, LogOut } from 'lucide-react';
+import { User, Menu, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import {
 import { useUser } from '@/contexts/UserContext';
 import CartDrawer from './CartDrawer';
 import AuthModal from './AuthModal';
+import SearchBar from './SearchBar';
 
 const Header = () => {
   const { user, isOwner, logout } = useUser();
@@ -67,13 +67,7 @@ const Header = () => {
 
             {/* Search Bar */}
             <div className="hidden md:flex flex-1 max-w-md mx-8">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Busca productos, marcas..."
-                  className="pl-10 bg-gray-50/50 border-gray-200 focus:border-primary"
-                />
-              </div>
+              <SearchBar />
             </div>
 
             {/* Action Buttons */}
