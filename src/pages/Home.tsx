@@ -18,25 +18,42 @@ const Home = () => {
       <section className="relative h-[500px] bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-yellow-400/20"></div>
         <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="max-w-2xl">
-            <div className="inline-block bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 animate-pulse">
-              🔥 DÍAS PELUDOS
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full">
+            {/* Text Content */}
+            <div className="max-w-2xl">
+              <div className="inline-block bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 animate-pulse">
+                🔥 DÍAS PELUDOS
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+                Hasta <span className="text-primary">50%</span> en alimentos
+              </h1>
+              <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-6">
+                y <span className="text-secondary">70%</span> en accesorios
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Dale a tu mascota lo mejor con nuestras ofertas especiales. 
+                Productos premium a precios increíbles.
+              </p>
+              <Link to="/catalogo?categoria=perros">
+                <Button size="lg" className="bg-primary hover:bg-blue-700 text-white px-8 py-4 text-lg">
+                  🛍️ Ir a comprar
+                </Button>
+              </Link>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
-              Hasta <span className="text-primary">50%</span> en alimentos
-            </h1>
-            <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 mb-6">
-              y <span className="text-secondary">70%</span> en accesorios
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Dale a tu mascota lo mejor con nuestras ofertas especiales. 
-              Productos premium a precios increíbles.
-            </p>
-            <Link to="/catalogo?categoria=perros">
-              <Button size="lg" className="bg-primary hover:bg-blue-700 text-white px-8 py-4 text-lg">
-                🛍️ Ir a comprar
-              </Button>
-            </Link>
+            
+            {/* Kitten Image */}
+            <div className="hidden lg:flex justify-center">
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=crop&w=400&h=400&q=80"
+                  alt="Gatito adorable"
+                  className="w-80 h-80 object-cover rounded-full shadow-2xl border-8 border-white/50"
+                />
+                <div className="absolute -top-4 -right-4 bg-secondary text-primary px-4 py-2 rounded-full font-bold text-lg shadow-lg animate-bounce">
+                  ¡Miau! 🐱
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

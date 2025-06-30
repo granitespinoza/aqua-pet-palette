@@ -34,8 +34,8 @@ const Header = () => {
               🐾 Envío gratis desde S/ 100.00
             </div>
             <div className="hidden md:flex items-center space-x-4 text-gray-600">
-              <span>📞 +51 9 1234 5678</span>
-              <span>📧 hola@gopet.pe</span>
+              <span>📞 +51 930224945</span>
+              <span>📧 Proyecto_Grupo_06@gmail.com</span>
               {!user && (
                 <Button
                   variant="ghost"

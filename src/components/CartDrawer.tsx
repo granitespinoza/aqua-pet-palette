@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '@/lib/formatPrice';
 import products from '@/data/products.json';
 
 const CartDrawer = () => {
@@ -21,15 +22,6 @@ const CartDrawer = () => {
     const product = products.find(p => p.id === item.id);
     return product ? { ...product, quantity: item.quantity } : null;
   }).filter(Boolean);
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(price);
-  };
 
   const getSubtotal = () => {
     return cartProducts.reduce((total, item) => {

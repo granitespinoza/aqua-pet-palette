@@ -18,7 +18,7 @@ const Footer = () => {
             </div>
             <p className="text-gray-600 text-sm leading-relaxed">
               Tu tienda online de confianza para el cuidado y bienestar de tus mascotas. 
-              Productos de calidad, precios justos y envío a todo Chile.
+              Productos de calidad, precios justos y envío a todo Perú.
             </p>
             <div className="flex space-x-4">
               <span className="text-2xl cursor-pointer hover:scale-110 transition-transform">📘</span>
@@ -55,15 +55,15 @@ const Footer = () => {
             <div className="space-y-2 text-sm">
               <div className="flex items-center space-x-2 text-gray-600">
                 <span>📞</span>
-                <span>+56 9 1234 5678</span>
+                <span>+51 930224945</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600">
                 <span>📧</span>
-                <span>hola@gopet.cl</span>
+                <span>Proyecto_Grupo_06@gmail.com</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600">
                 <span>📍</span>
-                <span>Santiago, Chile</span>
+                <span>Lima, Perú</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600">
                 <span>🕒</span>
@@ -75,7 +75,7 @@ const Footer = () => {
 
         <div className="border-t border-blue-100 mt-8 pt-8 text-center">
           <p className="text-gray-500 text-sm">
-            © 2024 GO Pet. Todos los derechos reservados. Desarrollado con ❤️ para las mascotas chilenas.
+            © 2024 GO Pet. Todos los derechos reservados. Desarrollado con ❤️ para las mascotas uwu.
           </p>
         </div>
       </div>
