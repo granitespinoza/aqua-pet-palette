@@ -19,9 +19,21 @@ export const useSearchResults = (query: string) => {
     
     // Simulate API delay
     const timer = setTimeout(() => {
-      const filtered = products
-        .filter(product => !product.deleted)
-        .filter(product => {
+      // Get products from localStorage first (admin data) or fallback to static data
+      const getProducts = () => {
+        const savedProducts = localStorage.getItem('products_public');
+        if (savedProducts) {
+          try {
+            return JSON.parse(savedProducts);
+          } catch (error) {
+            console.error('Error loading products from localStorage:', error);
+          }
+        }
+        return products as Product[];
+      };
+
+      const filtered = getProducts()
+        .filter((product: Product) => {
           const searchTerm = query.toLowerCase();
           const productName = product.nombre.toLowerCase();
           
