@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Menu, Settings, LogOut } from 'lucide-react';
+import { User, Menu, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import AuthModal from './AuthModal';
 import SearchBar from './SearchBar';
 
 const Header = () => {
-  const { user, isOwner, logout } = useUser();
+  const { user, logout } = useUser();
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const handleAuthClick = () => {
@@ -77,7 +77,7 @@ const Header = () => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="hidden md:flex">
                       <User className="w-4 h-4 mr-2" />
-                      👤 {user.profile?.nombre || user.email.split('@')[0]}
+                      👤 {user.profile.nombre}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
@@ -94,14 +94,6 @@ const Header = () => {
                 </Button>
               )}
               
-              {isOwner() && (
-                <Link to="/admin">
-                  <Button variant="ghost" size="sm" className="hidden md:flex">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Admin
-                  </Button>
-                </Link>
-              )}
               <CartDrawer />
               <Button variant="ghost" size="sm" className="md:hidden">
                 <Menu className="w-4 h-4" />
