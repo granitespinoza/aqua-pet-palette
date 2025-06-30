@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center pet-icon-glow">
                 <span className="text-white font-bold">🐾</span>
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
@@ -29,7 +29,10 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Enlaces rápidos</h3>
+            <div className="flex items-center">
+              <span className="text-orange-400 mr-2">🐾</span>
+              <h3 className="font-semibold text-gray-900">Enlaces rápidos</h3>
+            </div>
             <div className="space-y-2">
               <Link to="/catalogo?categoria=perros" className="block text-gray-600 hover:text-primary transition-colors text-sm">
                 Productos para Perros
@@ -51,7 +54,10 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Contacto</h3>
+            <div className="flex items-center">
+              <span className="text-blue-400 mr-2">🐾</span>
+              <h3 className="font-semibold text-gray-900">Contacto</h3>
+            </div>
             <div className="space-y-2 text-sm">
               <div className="flex items-center space-x-2 text-gray-600">
                 <span>📞</span>
@@ -74,9 +80,13 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-blue-100 mt-8 pt-8 text-center">
-          <p className="text-gray-500 text-sm">
-            © 2024 GO Pet. Todos los derechos reservados. Desarrollado con ❤️ para las mascotas uwu.
-          </p>
+          <div className="flex items-center justify-center space-x-2">
+            <span className="text-yellow-400">🐾</span>
+            <p className="text-gray-500 text-sm">
+              © 2024 GO Pet. Todos los derechos reservados. Desarrollado con ❤️ para las mascotas uwu.
+            </p>
+            <span className="text-blue-400">🐾</span>
+          </div>
         </div>
       </div>
     </footer>
