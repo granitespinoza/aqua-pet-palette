@@ -9,8 +9,10 @@ import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
 import { formatPrice } from '@/lib/formatPrice';
 import { toast } from 'sonner';
+import { Download } from 'lucide-react';
 import products from '@/data/products.json';
 import AuthModal from '@/components/AuthModal';
+import jsPDF from 'jspdf';
 
 const Checkout = () => {
   const { items, clearCart, getTotalItems } = useCart();
@@ -47,8 +49,116 @@ const Checkout = () => {
     return total + (price * item.quantity);
   }, 0);
 
+  const totalDescuentos = cartProducts.reduce((total, item) => {
+    if (!item || !item.precioOferta) return total;
+    const descuento = (item.precio - item.precioOferta) * item.quantity;
+    return total + descuento;
+  }, 0);
+
   const shipping = subtotal >= 100 ? 0 : 10;
   const total = subtotal + shipping;
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    // Configurar fuente
+    doc.setFont('helvetica');
+    
+    // Header de la tienda
+    doc.setFontSize(20);
+    doc.text('🐾 GO Pet', 20, 20);
+    doc.setFontSize(12);
+    doc.text('Tu tienda online de confianza para mascotas', 20, 30);
+    
+    // Línea separadora
+    doc.line(20, 35, 190, 35);
+    
+    // Título de boleta
+    doc.setFontSize(16);
+    doc.text('BOLETA DE VENTA', 20, 50);
+    
+    // Fecha
+    doc.setFontSize(10);
+    doc.text(`Fecha: ${new Date().toLocaleDateString('es-PE')}`, 20, 60);
+    doc.text(`Cliente: ${user?.profile.nombre} ${user?.profile.apellidos}`, 20, 65);
+    doc.text(`Dirección: ${direccion}`, 20, 70);
+    
+    // Línea separadora
+    doc.line(20, 75, 190, 75);
+    
+    // Headers de tabla
+    doc.setFontSize(10);
+    let yPos = 85;
+    doc.text('PRODUCTO', 20, yPos);
+    doc.text('CANT.', 120, yPos);
+    doc.text('P. UNIT.', 140, yPos);
+    doc.text('SUBTOTAL', 170, yPos);
+    
+    // Línea bajo headers
+    doc.line(20, yPos + 2, 190, yPos + 2);
+    yPos += 10;
+    
+    // Productos
+    cartProducts.forEach((item) => {
+      if (!item) return;
+      const price = item.precioOferta || item.precio;
+      const itemSubtotal = price * item.quantity;
+      
+      // Truncar nombre si es muy largo
+      const nombre = item.nombre.length > 35 ? item.nombre.substring(0, 35) + '...' : item.nombre;
+      
+      doc.text(nombre, 20, yPos);
+      doc.text(item.quantity.toString(), 125, yPos);
+      doc.text(`S/ ${price.toFixed(2)}`, 140, yPos);
+      doc.text(`S/ ${itemSubtotal.toFixed(2)}`, 170, yPos);
+      yPos += 8;
+    });
+    
+    // Línea antes de totales
+    yPos += 5;
+    doc.line(120, yPos, 190, yPos);
+    yPos += 10;
+    
+    // Totales
+    if (totalDescuentos > 0) {
+      doc.text(`Descuentos aplicados: -S/ ${totalDescuentos.toFixed(2)}`, 120, yPos);
+      yPos += 8;
+    }
+    
+    doc.text(`Subtotal: S/ ${subtotal.toFixed(2)}`, 120, yPos);
+    yPos += 8;
+    
+    if (shipping > 0) {
+      doc.text(`Envío: S/ ${shipping.toFixed(2)}`, 120, yPos);
+    } else {
+      doc.text('Envío: GRATIS', 120, yPos);
+    }
+    yPos += 8;
+    
+    // Total final
+    doc.setFontSize(12);
+    doc.text(`TOTAL: S/ ${total.toFixed(2)}`, 120, yPos);
+    
+    // Footer con datos de contacto
+    yPos += 20;
+    doc.line(20, yPos, 190, yPos);
+    yPos += 10;
+    
+    doc.setFontSize(8);
+    doc.text('DATOS DE CONTACTO:', 20, yPos);
+    yPos += 8;
+    doc.text('📞 +51 930224945', 20, yPos);
+    yPos += 6;
+    doc.text('📧 Proyecto_Grupo_06@gmail.com', 20, yPos);
+    yPos += 6;
+    doc.text('📍 Lima, Perú', 20, yPos);
+    yPos += 6;
+    doc.text('🕒 Lun - Vie: 9:00 - 18:00', 20, yPos);
+    
+    // Guardar PDF
+    doc.save(`boleta-go-pet-${Date.now()}.pdf`);
+    toast.success('Boleta descargada exitosamente');
+  };
 
   const handlePayment = () => {
     // Simular proceso de pago
@@ -63,7 +173,6 @@ const Checkout = () => {
       estado: 'pendiente'
     };
 
-    // Guardar en historial
     const orders = JSON.parse(localStorage.getItem('user_orders') || '[]');
     orders.unshift(orderData);
     localStorage.setItem('user_orders', JSON.stringify(orders));
@@ -167,6 +276,13 @@ const Checkout = () => {
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   
+                  {totalDescuentos > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Descuentos aplicados</span>
+                      <span>-{formatPrice(totalDescuentos)}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between text-sm">
                     <span>Envío</span>
                     <span className={shipping === 0 ? 'text-green-600 font-medium' : ''}>
@@ -181,6 +297,15 @@ const Checkout = () => {
                     <span className="text-primary">{formatPrice(total)}</span>
                   </div>
                 </div>
+
+                <Button
+                  onClick={generatePDF}
+                  variant="outline"
+                  className="w-full mb-2"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Descargar Boleta (PDF)
+                </Button>
 
                 <Button
                   onClick={handlePayment}
