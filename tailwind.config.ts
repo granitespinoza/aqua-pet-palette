@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -38,7 +37,7 @@ export default {
 					foreground: 'hsl(var(--destructive-foreground))'
 				},
 				muted: {
-					DEFAULT: '#F9F9F9',
+					DEFAULT: '#2A2D3A',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
@@ -63,7 +62,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Nueva paleta personalizada
+				// Paleta personalizada actualizada para modo oscuro
 				lime: {
 					DEFAULT: '#A8FE39',
 					bright: '#A8FE39',
@@ -73,6 +72,11 @@ export default {
 					DEFAULT: '#EDFF08',
 					bright: '#EDFF08',
 					glow: 'rgba(237, 255, 8, 0.3)'
+				},
+				dark: {
+					DEFAULT: '#1E2029',
+					light: '#2A2D3A',
+					lighter: '#3A3E4A'
 				}
 			},
 			borderRadius: {
