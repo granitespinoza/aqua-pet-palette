@@ -16,7 +16,11 @@ const Catalogo = () => {
   const isSearchMode = !!searchQuery;
   const products = isSearchMode ? searchResults.results : filteredProducts.products;
   const totalProducts = isSearchMode ? searchResults.totalResults : filteredProducts.totalProducts;
-  const isLoading = isSearchMode ? searchResults.isLoading : false;
+  const isLoading = isSearchMode ? searchResults.isLoading : filteredProducts.loading;
+
+  // Get current filters for display
+  const categoria = searchParams.get('categoria');
+  const marca = searchParams.get('marca');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
@@ -24,10 +28,49 @@ const Catalogo = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isSearchMode ? `Resultados para "${searchQuery}"` : 'Catálogo de productos'}
+            {isSearchMode ? (
+              <>
+                <span className="pet-icon-interactive mr-2">🔍</span>
+                Resultados para "{searchQuery}"
+              </>
+            ) : (
+              <>
+                <span className="pet-icon-interactive mr-2">🛍️</span>
+                Catálogo de productos
+              </>
+            )}
           </h1>
+          
+          {/* Show active filters */}
+          {(categoria || marca) && !isSearchMode && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {categoria && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                  <span className="pet-icon-interactive mr-1">🏷️</span>
+                  Categoría: {categoria}
+                </span>
+              )}
+              {marca && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                  <span className="pet-icon-interactive mr-1">🏢</span>
+                  Marca: {marca}
+                </span>
+              )}
+            </div>
+          )}
+          
           <p className="text-gray-600">
-            {isLoading ? 'Buscando...' : `${totalProducts} producto${totalProducts !== 1 ? 's' : ''} encontrado${totalProducts !== 1 ? 's' : ''}`}
+            {isLoading ? (
+              <>
+                <span className="pet-icon-interactive mr-1">⏳</span>
+                Buscando...
+              </>
+            ) : (
+              <>
+                <span className="pet-icon-interactive mr-1">📊</span>
+                {totalProducts} producto{totalProducts !== 1 ? 's' : ''} encontrado{totalProducts !== 1 ? 's' : ''}
+              </>
+            )}
           </p>
         </div>
 
@@ -51,16 +94,29 @@ const Catalogo = () => {
             ))}
           </div>
         ) : (
-          <Card className="max-w-md mx-auto bg-white/80 backdrop-blur-sm border border-blue-100">
+          <Card className="max-w-md mx-auto bg-white/80 backdrop-blur-sm border border-blue-100 pet-card-glow">
             <CardContent className="p-8 text-center">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <div className="text-6xl mb-4 pet-icon-interactive">🔍</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 pet-glow-orange">
+                <span className="pet-icon-interactive mr-2">😔</span>
                 No se encontraron resultados
               </h3>
               <p className="text-gray-600">
                 {isSearchMode 
-                  ? `No encontramos productos para "${searchQuery}". Intenta con otros términos.`
-                  : 'Intenta cambiar los filtros o busca otros productos.'
+                  ? (
+                    <>
+                      <span className="pet-icon-interactive mr-1">🐕</span>
+                      No encontramos productos para "{searchQuery}". Intenta con otros términos.
+                      <span className="pet-icon-interactive ml-1">🔍</span>
+                    </>
+                  )
+                  : (
+                    <>
+                      <span className="pet-icon-interactive mr-1">🐱</span>
+                      Intenta cambiar los filtros o busca otros productos.
+                      <span className="pet-icon-interactive ml-1">🎯</span>
+                    </>
+                  )
                 }
               </p>
             </CardContent>

@@ -33,46 +33,72 @@ export interface Category {
 export const useFilteredProducts = () => {
   const [searchParams] = useSearchParams();
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Intentar cargar desde localStorage primero (datos admin)
-    const getProducts = () => {
-      const savedProducts = localStorage.getItem('products_public');
-      if (savedProducts) {
-        try {
-          return JSON.parse(savedProducts);
-        } catch (error) {
-          console.error('Error loading products from localStorage:', error);
+    const filterProducts = () => {
+      setLoading(true);
+      
+      // Get products from localStorage or fallback to static data
+      const getProducts = (): Product[] => {
+        const savedProducts = localStorage.getItem('products_public');
+        if (savedProducts) {
+          try {
+            const parsed = JSON.parse(savedProducts);
+            console.log('Loaded products from localStorage:', parsed.length);
+            return parsed;
+          } catch (error) {
+            console.error('Error parsing products from localStorage:', error);
+          }
+        }
+        console.log('Using static products data:', productsData.length);
+        return productsData as Product[];
+      };
+
+      const categoria = searchParams.get('categoria');
+      const marca = searchParams.get('marca');
+      
+      console.log('Filtering with:', { categoria, marca });
+
+      let filtered = getProducts();
+      console.log('Total products before filtering:', filtered.length);
+
+      if (categoria) {
+        filtered = filtered.filter((product: Product) => {
+          const matches = product.categoriaId === categoria;
+          console.log(`Product ${product.nombre} - Category ${product.categoriaId} matches ${categoria}:`, matches);
+          return matches;
+        });
+        console.log('Products after category filter:', filtered.length);
+      }
+
+      if (marca) {
+        const brand = (brandsData as Brand[]).find(b => b.slug === marca);
+        console.log('Found brand:', brand);
+        if (brand) {
+          filtered = filtered.filter((product: Product) => {
+            const matches = product.marcaId === brand.id;
+            console.log(`Product ${product.nombre} - Brand ID ${product.marcaId} matches ${brand.id}:`, matches);
+            return matches;
+          });
+          console.log('Products after brand filter:', filtered.length);
         }
       }
-      // Fallback a datos estáticos
-      return productsData as Product[];
+
+      console.log('Final filtered products:', filtered.length);
+      setFilteredProducts(filtered);
+      setLoading(false);
     };
 
-    const categoria = searchParams.get('categoria');
-    const marca = searchParams.get('marca');
-
-    let filtered = getProducts();
-
-    if (categoria) {
-      filtered = filtered.filter((product: Product) => product.categoriaId === categoria);
-    }
-
-    if (marca) {
-      const brand = (brandsData as Brand[]).find(b => b.slug === marca);
-      if (brand) {
-        filtered = filtered.filter((product: Product) => product.marcaId === brand.id);
-      }
-    }
-
-    setFilteredProducts(filtered);
+    filterProducts();
   }, [searchParams]);
 
-  // Escuchar cambios en localStorage para sincronizar
+  // Listen for localStorage changes
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'products_public') {
-        // Refrescar productos cuando cambien en admin
+        console.log('Storage changed, refetching products');
+        // Trigger re-filter when products change
         const categoria = searchParams.get('categoria');
         const marca = searchParams.get('marca');
         
@@ -101,6 +127,7 @@ export const useFilteredProducts = () => {
     products: filteredProducts,
     brands: brandsData as Brand[],
     categories: categoriesData as Category[],
-    totalProducts: filteredProducts.length
+    totalProducts: filteredProducts.length,
+    loading
   };
 };
