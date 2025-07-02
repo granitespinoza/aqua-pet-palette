@@ -23,11 +23,11 @@ const Catalogo = () => {
   const marca = searchParams.get('marca');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-lime-bright/5 via-white to-yellow-bright/5 watercolor-section">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-black mb-2">
             {isSearchMode ? (
               <>
                 <span className="pet-icon-interactive mr-2">🔍</span>
@@ -45,13 +45,13 @@ const Catalogo = () => {
           {(categoria || marca) && !isSearchMode && (
             <div className="flex flex-wrap gap-2 mb-4">
               {categoria && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
+                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-lime-bright/20 text-black border border-lime-bright/30">
                   <span className="pet-icon-interactive mr-1">🏷️</span>
                   Categoría: {categoria}
                 </span>
               )}
               {marca && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-yellow-bright/20 text-black border border-yellow-bright/30">
                   <span className="pet-icon-interactive mr-1">🏢</span>
                   Marca: {marca}
                 </span>
@@ -59,7 +59,7 @@ const Catalogo = () => {
             </div>
           )}
           
-          <p className="text-gray-600">
+          <p className="text-black font-medium text-lg">
             {isLoading ? (
               <>
                 <span className="pet-icon-interactive mr-1">⏳</span>
@@ -78,11 +78,11 @@ const Catalogo = () => {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <Card key={i} className="animate-pulse bg-white/80 backdrop-blur-sm border border-blue-100">
+              <Card key={i} className="animate-pulse bg-white/90 backdrop-blur-sm border border-lime-bright/20">
                 <CardContent className="p-4">
-                  <div className="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="w-full h-48 bg-lime-bright/10 rounded-lg mb-4"></div>
+                  <div className="h-4 bg-lime-bright/10 rounded mb-2"></div>
+                  <div className="h-4 bg-lime-bright/10 rounded w-3/4"></div>
                 </CardContent>
               </Card>
             ))}
@@ -94,14 +94,14 @@ const Catalogo = () => {
             ))}
           </div>
         ) : (
-          <Card className="max-w-md mx-auto bg-white/80 backdrop-blur-sm border border-blue-100 pet-card-glow">
+          <Card className="max-w-md mx-auto bg-white/90 backdrop-blur-sm border border-lime-bright/20 pet-card-glow">
             <CardContent className="p-8 text-center">
-              <div className="text-6xl mb-4 pet-icon-interactive">🔍</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 pet-glow-orange">
+              <div className="text-8xl mb-4 pet-icon-interactive">🔍</div>
+              <h3 className="text-2xl font-bold text-black mb-2 pet-glow-lime">
                 <span className="pet-icon-interactive mr-2">😔</span>
                 No se encontraron resultados
               </h3>
-              <p className="text-gray-600">
+              <p className="text-black font-medium text-lg">
                 {isSearchMode 
                   ? (
                     <>

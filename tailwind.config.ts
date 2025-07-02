@@ -26,12 +26,12 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#1C64F2',
-					foreground: '#FFFFFF'
+					DEFAULT: '#A8FE39',
+					foreground: '#000000'
 				},
 				secondary: {
-					DEFAULT: '#F0C300',
-					foreground: '#1C64F2'
+					DEFAULT: '#EDFF08',
+					foreground: '#000000'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -62,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Nueva paleta personalizada
+				lime: {
+					DEFAULT: '#A8FE39',
+					bright: '#A8FE39',
+					glow: 'rgba(168, 254, 57, 0.3)'
+				},
+				yellow: {
+					DEFAULT: '#EDFF08',
+					bright: '#EDFF08',
+					glow: 'rgba(237, 255, 8, 0.3)'
 				}
 			},
 			borderRadius: {
@@ -95,12 +106,35 @@ export default {
 						opacity: '1',
 						transform: 'translateY(0)'
 					}
+				},
+				'watercolor-flow': {
+					'0%': { 
+						backgroundPosition: '0% 50%',
+						filter: 'blur(0px)'
+					},
+					'25%': { 
+						backgroundPosition: '25% 25%',
+						filter: 'blur(1px)'
+					},
+					'50%': { 
+						backgroundPosition: '100% 50%',
+						filter: 'blur(0px)'
+					},
+					'75%': { 
+						backgroundPosition: '75% 75%',
+						filter: 'blur(1px)'
+					},
+					'100%': { 
+						backgroundPosition: '0% 50%',
+						filter: 'blur(0px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.3s ease-out'
+				'fade-in': 'fade-in 0.3s ease-out',
+				'watercolor-flow': 'watercolor-flow 20s ease-in-out infinite'
 			}
 		}
 	},

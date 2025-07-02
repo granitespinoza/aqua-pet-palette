@@ -14,48 +14,48 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section con fondo más cálido */}
-      <section className="relative h-[500px] watercolor-hero overflow-hidden pet-texture-cotton">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-400/25 via-pink-400/20 to-yellow-400/25"></div>
+      {/* Hero Section con nueva paleta */}
+      <section className="relative h-[500px] watercolor-hero overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-lime-glow via-white/30 to-yellow-glow"></div>
         
-        {/* Huellas flotantes más expresivas y animadas */}
-        <div className="absolute top-16 left-8 text-orange-400/60 text-3xl floating-paw">🐾</div>
-        <div className="absolute top-32 right-16 text-pink-400/60 text-2xl floating-paw" style={{animationDelay: '0.5s'}}>🐾</div>
-        <div className="absolute bottom-24 left-1/4 text-yellow-400/70 text-2xl floating-paw" style={{animationDelay: '1s'}}>🐾</div>
-        <div className="absolute top-20 right-1/3 text-blue-400/50 text-xl floating-paw" style={{animationDelay: '1.5s'}}>🐾</div>
-        <div className="absolute bottom-16 right-12 text-green-400/60 text-2xl floating-paw" style={{animationDelay: '2s'}}>🐾</div>
+        {/* Iconos flotantes más atractivos */}
+        <div className="absolute top-16 left-8 text-4xl floating-paw">🎾</div>
+        <div className="absolute top-32 right-16 text-3xl floating-paw" style={{animationDelay: '0.5s'}}>🦴</div>
+        <div className="absolute bottom-24 left-1/4 text-3xl floating-paw" style={{animationDelay: '1s'}}>🐕‍🦺</div>
+        <div className="absolute top-20 right-1/3 text-2xl floating-paw" style={{animationDelay: '1.5s'}}>🎪</div>
+        <div className="absolute bottom-16 right-12 text-3xl floating-paw" style={{animationDelay: '2s'}}>🏆</div>
         
         {/* Elementos decorativos adicionales */}
-        <div className="absolute top-40 left-16 text-purple-400/40 text-lg animate-float">🏠</div>
-        <div className="absolute bottom-32 right-24 text-red-400/40 text-lg animate-float-delayed">🦴</div>
+        <div className="absolute top-40 left-16 text-2xl animate-float">🎊</div>
+        <div className="absolute bottom-32 right-24 text-2xl animate-float-delayed">⭐</div>
         
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full">
-            {/* Contenido de texto mejorado */}
+            {/* Contenido de texto con nueva paleta */}
             <div className="max-w-2xl">
-              <div className="inline-block bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-6 animate-pulse pet-glow-red pet-button-particles">
-                🔥 DÍAS PELUDOS 🔥
+              <div className="inline-block bg-gradient-to-r from-lime-bright to-yellow-bright text-black px-8 py-4 rounded-full text-lg font-bold mb-6 animate-pulse pet-glow-lime pet-button-particles shadow-lg">
+                🚀 MEGA OFERTAS PET 🚀
               </div>
               <div className="flex items-center mb-4">
-                <span className="text-orange-500 mr-3 text-2xl animate-bounce">🐾</span>
-                <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
-                  Hasta <span className="text-blue-600 pet-glow-blue">50%</span> en alimentos
+                <span className="text-lime-bright mr-3 text-3xl animate-bounce pet-icon-interactive">🎯</span>
+                <h1 className="text-4xl md:text-6xl font-bold text-black">
+                  Hasta <span className="text-lime-bright pet-glow-lime">50%</span> en alimentos
                 </h1>
               </div>
               <div className="flex items-center mb-6">
-                <span className="text-yellow-500 mr-3 text-2xl animate-bounce" style={{animationDelay: '0.2s'}}>🐾</span>
-                <h2 className="text-2xl md:text-3xl font-semibold text-gray-700">
-                  y <span className="text-yellow-500 pet-glow-yellow">70%</span> en accesorios
+                <span className="text-yellow-bright mr-3 text-3xl animate-bounce pet-icon-interactive" style={{animationDelay: '0.2s'}}>💫</span>
+                <h2 className="text-2xl md:text-3xl font-semibold text-black">
+                  y <span className="text-yellow-bright pet-glow-yellow">70%</span> en accesorios
                 </h2>
               </div>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+              <p className="text-lg text-black mb-8 leading-relaxed font-medium">
                 🎉 Dale a tu mascota lo mejor con nuestras ofertas especiales. 
-                Productos premium a precios increíbles. ¡Tu peludo amigo lo merece! 🐕🐱
+                Productos premium a precios increíbles. ¡Tu peludo amigo lo merece! 🌟🐕🐱
               </p>
               <Link to="/catalogo?categoria=perros">
-                <Button size="lg" className="pet-button-glow pet-button-particles group text-lg px-10 py-4">
-                  🛍️ Ir a comprar ahora
-                  <div className="paw-trail"></div>
+                <Button size="lg" className="pet-button-glow pet-button-particles group text-xl px-12 py-6 font-bold shadow-xl">
+                  🛒 ¡Comprar Ahora!
+                  <span className="ml-2 pet-icon-interactive">✨</span>
                 </Button>
               </Link>
             </div>
@@ -63,82 +63,82 @@ const Home = () => {
             {/* Imagen del gatito con efectos mejorados */}
             <div className="hidden lg:flex justify-center">
               <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-pink-400 via-purple-400 to-yellow-400 rounded-full opacity-20 animate-pulse"></div>
+                <div className="absolute -inset-6 bg-gradient-to-r from-lime-bright via-yellow-bright to-lime-bright rounded-full opacity-20 animate-pulse"></div>
                 <img
                   src="https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?auto=format&fit=crop&w=400&h=400&q=80"
                   alt="Gatito adorable"
-                  className="w-80 h-80 object-cover rounded-full shadow-2xl border-8 border-white/60 pet-image-glow relative z-10"
+                  className="w-80 h-80 object-cover rounded-full shadow-2xl border-8 border-white/80 pet-image-glow relative z-10"
                 />
-                <div className="absolute -top-6 -right-6 bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-6 py-3 rounded-full font-bold text-lg shadow-xl animate-bounce pet-glow-orange z-20">
-                  ¡Miau! 🐱💕
+                <div className="absolute -top-8 -right-8 bg-gradient-to-r from-yellow-bright to-lime-bright text-black px-8 py-4 rounded-full font-bold text-xl shadow-xl animate-bounce pet-glow-yellow z-20">
+                  ¡Miau! 😻💖
                 </div>
                 {/* Elementos decorativos alrededor de la imagen */}
-                <div className="absolute -bottom-2 -left-2 text-pink-400 text-xl animate-float">🎀</div>
-                <div className="absolute -top-2 left-8 text-blue-400 text-lg animate-float-delayed">⭐</div>
-                <div className="absolute top-12 -right-4 text-green-400 text-lg animate-float">🌟</div>
+                <div className="absolute -bottom-4 -left-4 text-3xl animate-float pet-icon-interactive">🎀</div>
+                <div className="absolute -top-4 left-8 text-2xl animate-float-delayed pet-icon-interactive">⭐</div>
+                <div className="absolute top-12 -right-6 text-2xl animate-float pet-icon-interactive">🌟</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categorías populares con colores más vibrantes */}
-      <section className="py-16 bg-white pet-texture-fur">
+      {/* Categorías populares con nueva paleta */}
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center mb-12">
-            <span className="text-orange-500 text-3xl mr-4 animate-bounce">🐾</span>
-            <h2 className="text-4xl font-bold text-center text-gray-900 pet-glow-blue">
+            <span className="text-lime-bright text-4xl mr-4 animate-bounce pet-icon-interactive">🎪</span>
+            <h2 className="text-4xl font-bold text-center text-black pet-glow-lime">
               Categorías populares
             </h2>
-            <span className="text-pink-500 text-3xl ml-4 animate-bounce" style={{animationDelay: '0.3s'}}>🐾</span>
+            <span className="text-yellow-bright text-4xl ml-4 animate-bounce pet-icon-interactive" style={{animationDelay: '0.3s'}}>🎊</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Link to="/catalogo?categoria=perros" className="group">
-              <Card className="pet-card-glow pet-card-orange hover:shadow-xl transition-all duration-500 pet-texture-cotton">
+              <Card className="pet-card-glow hover:shadow-2xl transition-all duration-500">
                 <CardContent className="p-8 text-center">
-                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-5xl group-hover:scale-125 transition-transform duration-500 pet-icon-glow shadow-lg">
+                  <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-lime-bright to-yellow-bright rounded-full flex items-center justify-center text-6xl group-hover:scale-125 transition-transform duration-500 pet-icon-glow shadow-xl">
                     🍖
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 pet-glow-orange">Nuevo Snack 🎉</h3>
-                  <p className="text-gray-700 text-lg">¡Premios irresistibles para consentir a tu perrito! 🐕❤️</p>
-                  <div className="mt-4 flex justify-center space-x-2">
-                    <span className="text-orange-400 text-sm">🐾</span>
-                    <span className="text-yellow-400 text-sm">🐾</span>
-                    <span className="text-red-400 text-sm">🐾</span>
+                  <h3 className="text-2xl font-bold text-black mb-3 pet-glow-lime">Nuevo Snack 🎉</h3>
+                  <p className="text-black text-lg font-medium">¡Premios irresistibles para consentir a tu perrito! 🐕💖</p>
+                  <div className="mt-4 flex justify-center space-x-3">
+                    <span className="text-lime-bright text-lg pet-icon-interactive">🏆</span>
+                    <span className="text-yellow-bright text-lg pet-icon-interactive">🌟</span>
+                    <span className="text-lime-bright text-lg pet-icon-interactive">🎯</span>
                   </div>
                 </CardContent>
               </Card>
             </Link>
 
             <Link to="/catalogo?categoria=perros" className="group">
-              <Card className="pet-card-glow pet-card-blue hover:shadow-xl transition-all duration-500 pet-texture-cotton">
+              <Card className="pet-card-glow hover:shadow-2xl transition-all duration-500">
                 <CardContent className="p-8 text-center">
-                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-5xl group-hover:scale-125 transition-transform duration-500 pet-icon-glow shadow-lg">
+                  <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-yellow-bright to-lime-bright rounded-full flex items-center justify-center text-6xl group-hover:scale-125 transition-transform duration-500 pet-icon-glow shadow-xl">
                     🦴
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 pet-glow-blue">Productos Perros 🐕</h3>
-                  <p className="text-gray-700 text-lg">Todo lo que tu fiel compañero necesita para ser feliz 🎾</p>
-                  <div className="mt-4 flex justify-center space-x-2">
-                    <span className="text-blue-400 text-sm">🐾</span>
-                    <span className="text-purple-400 text-sm">🐾</span>
-                    <span className="text-indigo-400 text-sm">🐾</span>
+                  <h3 className="text-2xl font-bold text-black mb-3 pet-glow-yellow">Productos Perros 🐕</h3>
+                  <p className="text-black text-lg font-medium">Todo lo que tu fiel compañero necesita para ser feliz 🎾✨</p>
+                  <div className="mt-4 flex justify-center space-x-3">
+                    <span className="text-yellow-bright text-lg pet-icon-interactive">🎾</span>
+                    <span className="text-lime-bright text-lg pet-icon-interactive">🦴</span>
+                    <span className="text-yellow-bright text-lg pet-icon-interactive">🏠</span>
                   </div>
                 </CardContent>
               </Card>
             </Link>
 
             <Link to="/catalogo?categoria=gatos" className="group">
-              <Card className="pet-card-glow pet-card-pink hover:shadow-xl transition-all duration-500 pet-texture-cotton">
+              <Card className="pet-card-glow hover:shadow-2xl transition-all duration-500">
                 <CardContent className="p-8 text-center">
-                  <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-5xl group-hover:scale-125 transition-transform duration-500 pet-icon-glow shadow-lg">
+                  <div className="w-28 h-28 mx-auto mb-6 bg-gradient-to-br from-lime-bright to-yellow-bright rounded-full flex items-center justify-center text-6xl group-hover:scale-125 transition-transform duration-500 pet-icon-glow shadow-xl">
                     🐱
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 pet-glow-pink">Productos Gatos 😺</h3>
-                  <p className="text-gray-700 text-lg">Cuidado especial para tus elegantes felinos 🎀✨</p>
-                  <div className="mt-4 flex justify-center space-x-2">
-                    <span className="text-pink-400 text-sm">🐾</span>
-                    <span className="text-purple-400 text-sm">🐾</span>
-                    <span className="text-rose-400 text-sm">🐾</span>
+                  <h3 className="text-2xl font-bold text-black mb-3 pet-glow-lime">Productos Gatos 😺</h3>
+                  <p className="text-black text-lg font-medium">Cuidado especial para tus elegantes felinos 🎀✨</p>
+                  <div className="mt-4 flex justify-center space-x-3">
+                    <span className="text-lime-bright text-lg pet-icon-interactive">🎀</span>
+                    <span className="text-yellow-bright text-lg pet-icon-interactive">😺</span>
+                    <span className="text-lime-bright text-lg pet-icon-interactive">🐾</span>
                   </div>
                 </CardContent>
               </Card>
@@ -147,15 +147,15 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Marcas populares con efectos mejorados */}
+      {/* Marcas populares */}
       <section className="py-16 watercolor-section">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center mb-12">
-            <span className="text-blue-500 text-3xl mr-4 animate-bounce">🐾</span>
-            <h2 className="text-4xl font-bold text-center text-gray-900 pet-glow-yellow">
+            <span className="text-lime-bright text-4xl mr-4 animate-bounce pet-icon-interactive">🏢</span>
+            <h2 className="text-4xl font-bold text-center text-black pet-glow-yellow">
               Marcas populares
             </h2>
-            <span className="text-green-500 text-3xl ml-4 animate-bounce" style={{animationDelay: '0.4s'}}>🐾</span>
+            <span className="text-yellow-bright text-4xl ml-4 animate-bounce pet-icon-interactive" style={{animationDelay: '0.4s'}}>⭐</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6">
             {brands.map((brand) => (
@@ -164,16 +164,16 @@ const Home = () => {
                 to={`/catalogo?marca=${brand.slug}`}
                 className="group"
               >
-                <Card className="pet-card-glow pet-card-subtle hover:shadow-lg transition-all duration-500 bg-white/90 backdrop-blur-sm pet-texture-cotton">
+                <Card className="pet-card-glow hover:shadow-lg transition-all duration-500 bg-white/95 backdrop-blur-sm">
                   <CardContent className="p-4 text-center">
                     <img
                       src={brand.logo}
                       alt={brand.nombre}
                       className="w-full h-16 object-contain mb-2 group-hover:scale-125 transition-transform duration-500 filter group-hover:brightness-110"
                     />
-                    <p className="text-sm font-semibold text-gray-800">{brand.nombre}</p>
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">
-                      <span className="text-green-400 text-xs">🐾</span>
+                    <p className="text-sm font-semibold text-black">{brand.nombre}</p>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-2">
+                      <span className="text-lime-bright text-lg pet-icon-interactive">✨</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -183,15 +183,15 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Productos recomendados con wrapper mejorado */}
-      <section className="py-16 bg-white pet-texture-fur">
+      {/* Productos recomendados */}
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center mb-12">
-            <span className="text-green-500 text-3xl mr-4 animate-bounce">🐾</span>
-            <h2 className="text-4xl font-bold text-center text-gray-900 pet-glow-orange">
+            <span className="text-lime-bright text-4xl mr-4 animate-bounce pet-icon-interactive">🏆</span>
+            <h2 className="text-4xl font-bold text-center text-black pet-glow-lime">
               Productos recomendados ⭐
             </h2>
-            <span className="text-purple-500 text-3xl ml-4 animate-bounce" style={{animationDelay: '0.5s'}}>🐾</span>
+            <span className="text-yellow-bright text-4xl ml-4 animate-bounce pet-icon-interactive" style={{animationDelay: '0.5s'}}>🎯</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product) => (
@@ -203,8 +203,9 @@ const Home = () => {
           
           <div className="text-center mt-12">
             <Link to="/catalogo">
-              <Button variant="outline" size="lg" className="border-2 border-primary text-primary hover:bg-primary hover:text-white pet-button-glow pet-button-particles px-8 py-4 text-lg font-semibold">
+              <Button variant="outline" size="lg" className="border-3 border-lime-bright text-black hover:bg-lime-bright hover:text-black pet-button-glow pet-button-particles px-10 py-6 text-xl font-bold shadow-xl">
                 Ver todos los productos 🎯
+                <span className="ml-2 pet-icon-interactive">✨</span>
               </Button>
             </Link>
           </div>
