@@ -57,6 +57,8 @@ const TENANT_CONFIGS: Record<string, TenantConfig> = {
   }
 };
 
+const STORAGE_KEY = 'gopet_selected_tenant';
+
 export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tenant, setTenant] = useState<TenantConfig | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
@@ -72,6 +74,9 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setTenant(tenantConfig);
       setIsPortal(false);
       
+      // Persistir en localStorage
+      localStorage.setItem(STORAGE_KEY, selectedTenantId);
+      
       // Update document title and favicon
       document.title = tenantConfig.name;
       
@@ -85,53 +90,60 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setTenantId(null);
       setTenant(null);
       setIsPortal(true);
+      
+      // Limpiar localStorage
+      localStorage.removeItem(STORAGE_KEY);
       document.title = 'GO Pet - El universo para tu mascota';
     }
   };
 
   useEffect(() => {
     const detectTenant = () => {
-      const hostname = window.location.hostname;
-      console.log('Detecting tenant from hostname:', hostname);
+      console.log('Detecting tenant...');
       
-      // Verificar parámetro de URL para desarrollo
+      // Paso 1: Verificar si hay un tenant guardado en localStorage
+      const savedTenantId = localStorage.getItem(STORAGE_KEY);
+      if (savedTenantId && TENANT_CONFIGS[savedTenantId]) {
+        console.log('Tenant detected from localStorage:', savedTenantId);
+        setSelectedTenant(savedTenantId);
+        setIsLoading(false);
+        return;
+      }
+
+      // Paso 2: Verificar parámetro de URL para desarrollo
       const urlParams = new URLSearchParams(window.location.search);
       const tenantParam = urlParams.get('tenant');
       
-      let detectedTenantId: string | null = null;
-      
       if (tenantParam && TENANT_CONFIGS[tenantParam]) {
-        // Para desarrollo con parámetro ?tenant=
-        detectedTenantId = tenantParam;
-        console.log('Tenant detected from URL param:', detectedTenantId);
-      } else {
-        // Extraer subdomain para producción
-        const subdomain = hostname.split('.')[0];
-        if (TENANT_CONFIGS[subdomain]) {
-          detectedTenantId = subdomain;
-          console.log('Tenant detected from subdomain:', detectedTenantId);
-        }
+        console.log('Tenant detected from URL param:', tenantParam);
+        setSelectedTenant(tenantParam);
+        setIsLoading(false);
+        return;
+      }
+
+      // Paso 3: Extraer subdomain para producción
+      const hostname = window.location.hostname;
+      const subdomain = hostname.split('.')[0];
+      if (TENANT_CONFIGS[subdomain]) {
+        console.log('Tenant detected from subdomain:', subdomain);
+        setSelectedTenant(subdomain);
+        setIsLoading(false);
+        return;
       }
       
-      console.log('Final detected tenant:', detectedTenantId);
-      
-      if (detectedTenantId) {
-        setSelectedTenant(detectedTenantId);
-      } else {
-        // Estamos en el portal principal
-        console.log('No tenant detected, showing portal');
-        setTenantId(null);
-        setTenant(null);
-        setIsPortal(true);
-        document.title = 'GO Pet - El universo para tu mascota';
-      }
-      
+      // Paso 4: No hay tenant, mostrar portal
+      console.log('No tenant detected, showing portal');
+      setTenantId(null);
+      setTenant(null);
+      setIsPortal(true);
+      localStorage.removeItem(STORAGE_KEY);
+      document.title = 'GO Pet - El universo para tu mascota';
       setIsLoading(false);
     };
 
-    // Pequeño delay para asegurar que todo esté cargado
-    setTimeout(detectTenant, 100);
-  }, []);
+    // Ejecutar detección inmediatamente
+    detectTenant();
+  }, []); // Solo ejecutar una vez al montar el componente
 
   return (
     <TenantContext.Provider value={{ tenant, tenantId, isLoading, isPortal, setSelectedTenant }}>

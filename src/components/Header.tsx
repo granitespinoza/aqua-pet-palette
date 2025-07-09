@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ArrowLeft, User, Package, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,36 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useCart } from '@/contexts/CartContext';
 import AuthButton from '@/components/AuthButton';
 import CartDrawer from '@/components/CartDrawer';
+import SearchBar from '@/components/SearchBar';
 import { useTenant } from '@/contexts/TenantContext';
-
-const SearchBar = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/catalogo?q=${searchQuery}`;
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="flex items-center w-full">
-      <Input
-        type="search"
-        placeholder="Buscar productos..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="rounded-r-none shadow-none focus-visible:ring-0 bg-white/90 border-white/50"
-      />
-      <Button type="submit" variant="default" className="rounded-l-none bg-primary text-white">
-        <Search className="w-5 h-5" />
-      </Button>
-    </form>
-  );
-};
 
 const Header = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -89,7 +62,6 @@ const Header = () => {
   const handleBackToPortal = () => {
     console.log('Going back to portal...');
     setSelectedTenant(null);
-    window.location.href = '/';
   };
 
   return (

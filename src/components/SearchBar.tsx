@@ -30,6 +30,7 @@ const SearchBar = () => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showSuggestions || suggestions.length === 0) {
       if (e.key === 'Enter' && query.trim()) {
+        console.log('Navigating to catalog with query:', query.trim());
         navigate(`/catalogo?q=${encodeURIComponent(query.trim())}`);
         setShowSuggestions(false);
         inputRef.current?.blur();
@@ -53,6 +54,7 @@ const SearchBar = () => {
         if (selectedIndex >= 0) {
           handleSuggestionSelect(suggestions[selectedIndex]);
         } else if (query.trim()) {
+          console.log('Navigating to catalog with query:', query.trim());
           navigate(`/catalogo?q=${encodeURIComponent(query.trim())}`);
           setShowSuggestions(false);
           inputRef.current?.blur();
@@ -67,6 +69,7 @@ const SearchBar = () => {
   };
 
   const handleSuggestionSelect = (product: any) => {
+    console.log('Product selected from suggestions:', product);
     setSelectedProduct(product);
     setShowModal(true);
     setShowSuggestions(false);
@@ -81,6 +84,7 @@ const SearchBar = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+      console.log('Form submitted with query:', query.trim());
       navigate(`/catalogo?q=${encodeURIComponent(query.trim())}`);
       setShowSuggestions(false);
       inputRef.current?.blur();
