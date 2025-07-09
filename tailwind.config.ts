@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -25,19 +26,19 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#A8FE39',
-					foreground: '#000000'
+					DEFAULT: 'hsl(220, 90%, 56%)',
+					foreground: 'hsl(0, 0%, 100%)'
 				},
 				secondary: {
-					DEFAULT: '#EDFF08',
-					foreground: '#000000'
+					DEFAULT: 'hsl(45, 100%, 51%)',
+					foreground: 'hsl(0, 0%, 0%)'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
 				},
 				muted: {
-					DEFAULT: '#2A2D3A',
+					DEFAULT: 'hsl(210, 40%, 96%)',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
@@ -62,21 +63,16 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Paleta personalizada actualizada para modo oscuro
-				lime: {
-					DEFAULT: '#A8FE39',
-					bright: '#A8FE39',
-					glow: 'rgba(168, 254, 57, 0.3)'
+				// Paleta personalizada para modo blanco
+				blue: {
+					DEFAULT: 'hsl(220, 90%, 56%)',
+					bright: 'hsl(220, 90%, 56%)',
+					glow: 'hsla(220, 90%, 56%, 0.3)'
 				},
 				yellow: {
-					DEFAULT: '#EDFF08',
-					bright: '#EDFF08',
-					glow: 'rgba(237, 255, 8, 0.3)'
-				},
-				dark: {
-					DEFAULT: '#1E2029',
-					light: '#2A2D3A',
-					lighter: '#3A3E4A'
+					DEFAULT: 'hsl(45, 100%, 51%)',
+					bright: 'hsl(45, 100%, 51%)',
+					glow: 'hsla(45, 100%, 51%, 0.3)'
 				}
 			},
 			borderRadius: {

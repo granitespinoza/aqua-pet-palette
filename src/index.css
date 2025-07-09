@@ -1,5 +1,4 @@
 
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -10,47 +9,47 @@
     @apply border-border;
   }
   body {
-    @apply bg-dark text-white;
+    @apply bg-white text-gray-900;
     background: linear-gradient(135deg, 
-      rgba(168, 254, 57, 0.03) 0%, 
-      #1E2029 20%,
-      rgba(237, 255, 8, 0.04) 40%,
-      #1E2029 60%,
-      rgba(168, 254, 57, 0.03) 80%,
-      rgba(237, 255, 8, 0.02) 100%);
+      hsla(220, 90%, 56%, 0.03) 0%, 
+      #ffffff 20%,
+      hsla(45, 100%, 51%, 0.04) 40%,
+      #ffffff 60%,
+      hsla(220, 90%, 56%, 0.03) 80%,
+      hsla(45, 100%, 51%, 0.02) 100%);
     background-size: 400% 400%;
     animation: watercolor-flow 25s ease-in-out infinite;
   }
 }
 
-/* Watercolor Background Styles para modo oscuro */
+/* Watercolor Background Styles para modo blanco */
 .watercolor-hero {
   background: linear-gradient(135deg, 
-    rgba(168, 254, 57, 0.08) 0%, 
-    #1E2029 25%,
-    rgba(237, 255, 8, 0.06) 50%, 
-    #1E2029 75%, 
-    rgba(168, 254, 57, 0.05) 100%);
+    hsla(220, 90%, 56%, 0.08) 0%, 
+    #ffffff 25%,
+    hsla(45, 100%, 51%, 0.06) 50%, 
+    #ffffff 75%, 
+    hsla(220, 90%, 56%, 0.05) 100%);
   background-size: 600% 600%;
   animation: watercolor-flow 30s ease-in-out infinite;
 }
 
 .watercolor-section {
   background: linear-gradient(120deg, 
-    rgba(168, 254, 57, 0.04) 0%, 
-    #1E2029 30%,
-    rgba(237, 255, 8, 0.03) 60%,
-    #1E2029 100%);
+    hsla(220, 90%, 56%, 0.04) 0%, 
+    #ffffff 30%,
+    hsla(45, 100%, 51%, 0.03) 60%,
+    #ffffff 100%);
   background-size: 500% 500%;
   animation: watercolor-flow 35s ease-in-out infinite;
 }
 
 .watercolor-footer {
   background: linear-gradient(150deg, 
-    rgba(237, 255, 8, 0.05) 0%, 
-    #1E2029 40%,
-    rgba(168, 254, 57, 0.04) 70%,
-    #1E2029 100%);
+    hsla(45, 100%, 51%, 0.05) 0%, 
+    #ffffff 40%,
+    hsla(220, 90%, 56%, 0.04) 70%,
+    #ffffff 100%);
   background-size: 400% 400%;
   animation: watercolor-flow 40s ease-in-out infinite;
 }
@@ -94,64 +93,64 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Efectos de glow para modo oscuro */
-.pet-glow-lime { 
-  text-shadow: 0 0 10px rgba(168, 254, 57, 0.6);
+/* Efectos de glow para modo blanco */
+.pet-glow-blue { 
+  text-shadow: 0 0 10px hsla(220, 90%, 56%, 0.6);
   transition: text-shadow 0.3s ease;
 }
 
 .pet-glow-yellow { 
-  text-shadow: 0 0 10px rgba(237, 255, 8, 0.6);
+  text-shadow: 0 0 10px hsla(45, 100%, 51%, 0.6);
   transition: text-shadow 0.3s ease;
 }
 
-.pet-glow-white { 
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+.pet-glow-gray { 
+  text-shadow: 0 0 8px hsla(0, 0%, 0%, 0.4);
   transition: text-shadow 0.3s ease;
 }
 
-/* Enhanced Card Effects para modo oscuro */
+/* Enhanced Card Effects para modo blanco */
 .pet-card-glow {
-  box-shadow: 0 4px 20px rgba(168, 254, 57, 0.15);
+  box-shadow: 0 4px 20px hsla(220, 90%, 56%, 0.15);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  border: 2px solid rgba(168, 254, 57, 0.1);
-  background: rgba(30, 32, 41, 0.8);
+  border: 2px solid hsla(220, 90%, 56%, 0.1);
+  background: hsla(0, 0%, 100%, 0.8);
   backdrop-filter: blur(10px);
 }
 
 .pet-card-glow:hover {
-  box-shadow: 0 8px 30px rgba(168, 254, 57, 0.25);
+  box-shadow: 0 8px 30px hsla(220, 90%, 56%, 0.25);
   transform: translateY(-3px);
-  border-color: rgba(168, 254, 57, 0.3);
+  border-color: hsla(220, 90%, 56%, 0.3);
 }
 
-/* Enhanced Button Effects para modo oscuro */
+/* Enhanced Button Effects para modo blanco */
 .pet-button-glow {
   transition: box-shadow 0.3s ease, transform 0.2s ease;
-  background: linear-gradient(135deg, #A8FE39 0%, #EDFF08 100%);
-  color: #000000;
+  background: linear-gradient(135deg, hsl(220, 90%, 56%) 0%, hsl(45, 100%, 51%) 100%);
+  color: #ffffff;
   border: none;
 }
 
 .pet-button-glow:hover {
-  box-shadow: 0 6px 20px rgba(168, 254, 57, 0.4);
+  box-shadow: 0 6px 20px hsla(220, 90%, 56%, 0.4);
   transform: translateY(-2px);
-  background: linear-gradient(135deg, #EDFF08 0%, #A8FE39 100%);
+  background: linear-gradient(135deg, hsl(45, 100%, 51%) 0%, hsl(220, 90%, 56%) 100%);
 }
 
 /* Enhanced Icon Effects */
 .pet-icon-interactive {
   display: inline-block;
   transition: transform 0.3s ease, filter 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(168, 254, 57, 0.3));
+  filter: drop-shadow(0 2px 4px hsla(220, 90%, 56%, 0.3));
 }
 
 .pet-icon-interactive:hover {
   transform: scale(1.2) rotate(5deg);
-  filter: drop-shadow(0 4px 8px rgba(168, 254, 57, 0.5));
+  filter: drop-shadow(0 4px 8px hsla(220, 90%, 56%, 0.5));
 }
 
-/* Enhanced Link Effects para modo oscuro */
+/* Enhanced Link Effects para modo blanco */
 .pet-link-glow {
   position: relative;
   transition: color 0.3s ease;
@@ -164,7 +163,7 @@
   height: 3px;
   bottom: -3px;
   left: 0;
-  background: linear-gradient(90deg, #A8FE39, #EDFF08);
+  background: linear-gradient(90deg, hsl(220, 90%, 56%), hsl(45, 100%, 51%));
   transition: width 0.3s ease;
   border-radius: 2px;
 }
@@ -190,7 +189,7 @@
 /* Floating Paw Animation */
 .floating-paw {
   animation: float 6s ease-in-out infinite;
-  filter: drop-shadow(0 2px 4px rgba(168, 254, 57, 0.3));
+  filter: drop-shadow(0 2px 4px hsla(220, 90%, 56%, 0.3));
 }
 
 /* Performance Optimizations */
@@ -216,4 +215,3 @@
     animation: none !important;
   }
 }
-

@@ -30,10 +30,27 @@ export interface Category {
   slug: string;
 }
 
-export const useFilteredProducts = () => {
-  const [searchParams] = useSearchParams();
+export const useFilteredProducts = (productsPerPage: number = 20) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Get current page from URL params
+  useEffect(() => {
+    const page = parseInt(searchParams.get('page') || '1');
+    setCurrentPage(page);
+  }, [searchParams]);
+
+  const updatePage = (page: number) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (page === 1) {
+      newSearchParams.delete('page');
+    } else {
+      newSearchParams.set('page', page.toString());
+    }
+    setSearchParams(newSearchParams);
+  };
 
   useEffect(() => {
     const filterProducts = () => {
@@ -123,11 +140,23 @@ export const useFilteredProducts = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [searchParams]);
 
+  // Calculate pagination
+  const totalProducts = filteredProducts.length;
+  const totalPages = Math.ceil(totalProducts / productsPerPage);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
   return {
-    products: filteredProducts,
+    products: paginatedProducts,
     brands: brandsData as Brand[],
     categories: categoriesData as Category[],
-    totalProducts: filteredProducts.length,
-    loading
+    totalProducts,
+    loading,
+    currentPage,
+    totalPages,
+    updatePage,
+    hasNextPage: currentPage < totalPages,
+    hasPrevPage: currentPage > 1
   };
 };
