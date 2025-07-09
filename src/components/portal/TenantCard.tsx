@@ -15,9 +15,12 @@ const TenantCard: React.FC<TenantCardProps> = ({
   buttonText
 }) => {
   const handleClick = () => {
+    console.log('TenantCard clicked:', tenantId);
     // En desarrollo, usamos parámetros de URL
-    if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
-      window.location.href = `${window.location.origin}?tenant=${tenantId}`;
+    if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('lovableproject.com')) {
+      const newUrl = `${window.location.origin}?tenant=${tenantId}`;
+      console.log('Redirecting to:', newUrl);
+      window.location.href = newUrl;
     } else {
       // En producción, redirigir al subdominio
       window.location.href = `https://${tenantId}.gopet.com`;
@@ -30,6 +33,7 @@ const TenantCard: React.FC<TenantCardProps> = ({
         src={backgroundImageUrl} 
         alt={tenantName}
         className="tenant-card-image"
+        loading="lazy"
       />
       <div className="tenant-card-overlay">
         <h3 className="tenant-card-title">{tenantName}</h3>

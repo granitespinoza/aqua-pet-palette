@@ -15,7 +15,7 @@ interface TenantContextType {
   tenant: TenantConfig | null;
   tenantId: string | null;
   isLoading: boolean;
-  isPortal: boolean; // Nueva propiedad para indicar si estamos en el portal principal
+  isPortal: boolean;
 }
 
 const TenantContext = createContext<TenantContextType>({
@@ -75,15 +75,17 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (tenantParam && TENANT_CONFIGS[tenantParam]) {
         // Para desarrollo con parámetro ?tenant=
         detectedTenantId = tenantParam;
+        console.log('Tenant detected from URL param:', detectedTenantId);
       } else {
         // Extraer subdomain para producción
         const subdomain = hostname.split('.')[0];
         if (TENANT_CONFIGS[subdomain]) {
           detectedTenantId = subdomain;
+          console.log('Tenant detected from subdomain:', detectedTenantId);
         }
       }
       
-      console.log('Detected tenant:', detectedTenantId);
+      console.log('Final detected tenant:', detectedTenantId);
       
       if (detectedTenantId) {
         const tenantConfig = TENANT_CONFIGS[detectedTenantId];
@@ -101,6 +103,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       } else {
         // Estamos en el portal principal
+        console.log('No tenant detected, showing portal');
         setTenantId(null);
         setTenant(null);
         setIsPortal(true);
@@ -110,7 +113,8 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setIsLoading(false);
     };
 
-    detectTenant();
+    // Pequeño delay para asegurar que todo esté cargado
+    setTimeout(detectTenant, 100);
   }, []);
 
   return (

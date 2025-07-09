@@ -21,9 +21,11 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const { isLoading, isPortal } = useTenant();
 
+  console.log('AppContent - isLoading:', isLoading, 'isPortal:', isPortal);
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando GO Pet...</p>
@@ -33,7 +35,7 @@ const AppContent = () => {
   }
 
   if (isPortal) {
-    // Mostrar el portal principal
+    // Mostrar el portal principal sin BrowserRouter
     return <Portal />;
   }
 
