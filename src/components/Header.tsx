@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ArrowLeft, User, Package, LogOut } from 'lucide-react';
@@ -11,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useCart } from '@/contexts/CartContext';
-import AuthModal from '@/components/AuthModal';
+import AuthButton from '@/components/AuthButton';
 import CartDrawer from '@/components/CartDrawer';
 import { useTenant } from '@/contexts/TenantContext';
 
@@ -140,7 +141,7 @@ const Header = () => {
             )}
 
             {/* Autenticación */}
-            <AuthModal />
+            <AuthButton />
 
             {/* Carrito */}
             <CartDrawer />
