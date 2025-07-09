@@ -33,9 +33,9 @@ const SearchBar = () => {
         placeholder="Buscar productos..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="rounded-r-none shadow-none focus-visible:ring-0"
+        className="rounded-r-none shadow-none focus-visible:ring-0 bg-white/90 border-white/50"
       />
-      <Button type="submit" variant="default" className="rounded-l-none">
+      <Button type="submit" variant="default" className="rounded-l-none bg-primary text-white">
         <Search className="w-5 h-5" />
       </Button>
     </form>
@@ -44,7 +44,7 @@ const SearchBar = () => {
 
 const Header = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const { tenant, tenantId } = useTenant();
+  const { tenant, tenantId, setSelectedTenant } = useTenant();
 
   // Get tenant-specific branding
   const getTenantBranding = () => {
@@ -54,7 +54,7 @@ const Header = () => {
           name: 'DogShop',
           emoji: '🐕',
           bgColor: 'bg-orange-100',
-          textColor: 'text-orange-800',
+          textColor: 'text-orange-900',
           tagline: 'Todo para tu mejor amigo'
         };
       case 'catshop':
@@ -62,7 +62,7 @@ const Header = () => {
           name: 'CatShop', 
           emoji: '🐱',
           bgColor: 'bg-pink-100',
-          textColor: 'text-purple-800',
+          textColor: 'text-purple-900',
           tagline: 'Elegancia felina'
         };
       case 'vetshop':
@@ -70,21 +70,27 @@ const Header = () => {
           name: 'VetShop',
           emoji: '🏥',
           bgColor: 'bg-blue-100', 
-          textColor: 'text-blue-800',
+          textColor: 'text-blue-900',
           tagline: 'Cuidado profesional'
         };
       default:
         return {
           name: 'GO Pet',
           emoji: '🐾',
-          bgColor: 'bg-gradient-to-r from-pastel-cyan to-pastel-peach',
-          textColor: 'text-black',
+          bgColor: 'bg-gradient-to-r from-cyan-50 to-orange-50',
+          textColor: 'text-gray-900',
           tagline: 'El universo para tu mascota'
         };
     }
   };
 
   const branding = getTenantBranding();
+
+  const handleBackToPortal = () => {
+    console.log('Going back to portal...');
+    setSelectedTenant(null);
+    window.location.href = '/';
+  };
 
   return (
     <header className={`sticky top-0 z-50 glass-effect border-b border-white/20 ${branding.bgColor}`}>
@@ -129,11 +135,8 @@ const Header = () => {
               <Button
                 variant="outline"
                 size="sm"
-                className={`hidden sm:flex glass-effect ${branding.textColor} hover:${branding.textColor} border-2 border-white/50 px-3 py-2 font-bold`}
-                onClick={() => {
-                  const { setSelectedTenant } = useTenant();
-                  setSelectedTenant(null);
-                }}
+                className={`hidden sm:flex glass-effect ${branding.textColor} hover:${branding.textColor} border-2 border-white/50 px-3 py-2 font-bold bg-white/80 hover:bg-white/90`}
+                onClick={handleBackToPortal}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Portal
@@ -152,26 +155,26 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`p-2 glass-effect ${branding.textColor} hover:${branding.textColor} border border-white/30`}
+                  className={`p-2 glass-effect ${branding.textColor} hover:${branding.textColor} border border-white/30 bg-white/80 hover:bg-white/90`}
                 >
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 glass-effect border border-white/30">
+              <DropdownMenuContent align="end" className="w-48 glass-effect border border-white/30 bg-white/95 backdrop-blur-md">
                 <DropdownMenuItem asChild>
-                  <Link to="/perfil" className="flex items-center">
+                  <Link to="/perfil" className="flex items-center text-gray-900">
                     <User className="mr-2 h-4 w-4" />
                     Mi Perfil
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/pedidos" className="flex items-center">
+                  <Link to="/pedidos" className="flex items-center text-gray-900">
                     <Package className="mr-2 h-4 w-4" />
                     Mis Pedidos
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white/20" />
-                <DropdownMenuItem>
+                <DropdownMenuItem className="text-gray-900">
                   <LogOut className="mr-2 h-4 w-4" />
                   Cerrar Sesión
                 </DropdownMenuItem>

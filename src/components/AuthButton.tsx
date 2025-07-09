@@ -19,13 +19,13 @@ const AuthButton = ({ className }: AuthButtonProps) => {
   const getTenantBranding = () => {
     switch (tenantId) {
       case 'dogshop':
-        return { textColor: 'text-orange-800' };
+        return { textColor: 'text-orange-900' };
       case 'catshop':
-        return { textColor: 'text-purple-800' };
+        return { textColor: 'text-purple-900' };
       case 'vetshop':
-        return { textColor: 'text-blue-800' };
+        return { textColor: 'text-blue-900' };
       default:
-        return { textColor: 'text-black' };
+        return { textColor: 'text-gray-900' };
     }
   };
 
@@ -34,7 +34,7 @@ const AuthButton = ({ className }: AuthButtonProps) => {
   if (user) {
     return (
       <div className={`flex items-center space-x-2 ${className}`}>
-        <span className={`text-sm font-medium ${branding.textColor}`}>
+        <span className={`text-sm font-medium ${branding.textColor} bg-white/80 px-3 py-1 rounded-full`}>
           Hola, {user.profile.nombre}
         </span>
       </div>
@@ -46,7 +46,7 @@ const AuthButton = ({ className }: AuthButtonProps) => {
       <Button
         variant="ghost"
         size="sm"
-        className={`p-2 glass-effect ${branding.textColor} hover:${branding.textColor} border border-white/30 ${className}`}
+        className={`p-2 glass-effect ${branding.textColor} hover:${branding.textColor} border border-white/30 bg-white/80 hover:bg-white/90 ${className}`}
         onClick={() => setShowAuthModal(true)}
       >
         <User className="h-5 w-5" />
