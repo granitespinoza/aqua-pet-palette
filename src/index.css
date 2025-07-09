@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,168 +8,229 @@
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-white text-black;
+    @apply bg-white text-gray-900;
+    font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, 
-      hsla(183, 100%, 94%, 0.3) 0%, 
-      hsla(235, 55%, 85%, 0.2) 20%,
-      hsla(27, 100%, 88%, 0.3) 40%,
-      hsla(352, 100%, 81%, 0.2) 60%,
-      hsla(60, 100%, 93%, 0.3) 80%,
-      hsla(162, 63%, 83%, 0.2) 100%);
+      hsl(183, 100%, 94%) 0%, 
+      hsl(235, 55%, 85%) 20%,
+      hsl(27, 100%, 88%) 40%,
+      hsl(352, 100%, 81%) 60%,
+      hsl(60, 100%, 93%) 80%,
+      hsl(162, 63%, 83%) 100%);
     background-size: 400% 400%;
     animation: watercolor-flow 25s ease-in-out infinite;
+    background-attachment: fixed;
   }
 }
 
-/* Watercolor Background Styles con nueva paleta */
+/* Enhanced Watercolor Backgrounds */
 .watercolor-hero {
   background: linear-gradient(135deg, 
-    hsla(183, 100%, 94%, 0.4) 0%, 
-    hsla(235, 55%, 85%, 0.3) 25%,
-    hsla(27, 100%, 88%, 0.4) 50%, 
-    hsla(352, 100%, 81%, 0.3) 75%, 
-    hsla(60, 100%, 93%, 0.4) 100%);
+    hsl(183, 100%, 94%) 0%, 
+    hsl(235, 55%, 85%) 25%,
+    hsl(27, 100%, 88%) 50%, 
+    hsl(352, 100%, 81%) 75%, 
+    hsl(60, 100%, 93%) 100%);
   background-size: 600% 600%;
   animation: watercolor-flow 30s ease-in-out infinite;
 }
 
 .watercolor-section {
   background: linear-gradient(120deg, 
-    hsla(162, 63%, 83%, 0.3) 0%, 
-    hsla(183, 100%, 94%, 0.4) 30%,
-    hsla(235, 55%, 85%, 0.3) 60%,
-    hsla(27, 100%, 88%, 0.2) 100%);
+    hsla(162, 63%, 83%, 0.8) 0%, 
+    hsla(183, 100%, 94%, 0.9) 30%,
+    hsla(235, 55%, 85%, 0.8) 60%,
+    hsla(27, 100%, 88%, 0.7) 100%);
   background-size: 500% 500%;
   animation: watercolor-flow 35s ease-in-out infinite;
 }
 
 .watercolor-footer {
   background: linear-gradient(150deg, 
-    hsla(352, 100%, 81%, 0.3) 0%, 
-    hsla(60, 100%, 93%, 0.4) 40%,
-    hsla(162, 63%, 83%, 0.3) 70%,
-    hsla(183, 100%, 94%, 0.2) 100%);
+    hsla(352, 100%, 81%, 0.9) 0%, 
+    hsla(60, 100%, 93%, 0.8) 40%,
+    hsla(162, 63%, 83%, 0.9) 70%,
+    hsla(183, 100%, 94%, 0.8) 100%);
   background-size: 400% 400%;
   animation: watercolor-flow 40s ease-in-out infinite;
 }
 
-/* Optimized Animations */
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(5deg); }
-}
-
-@keyframes float-delayed {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(-3deg); }
-}
-
+/* Enhanced Animations */
 @keyframes watercolor-flow {
   0% { 
     background-position: 0% 50%;
-    filter: blur(0px);
+    filter: blur(0px) brightness(1);
   }
   25% { 
     background-position: 25% 25%;
-    filter: blur(1px);
+    filter: blur(1px) brightness(1.1);
   }
   50% { 
     background-position: 100% 50%;
-    filter: blur(0px);
+    filter: blur(0px) brightness(1);
   }
   75% { 
     background-position: 75% 75%;
-    filter: blur(1px);
+    filter: blur(1px) brightness(1.05);
   }
   100% { 
     background-position: 0% 50%;
-    filter: blur(0px);
+    filter: blur(0px) brightness(1);
   }
 }
 
-@keyframes page-enter {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg) scale(1); 
+  }
+  50% { 
+    transform: translateY(-15px) rotate(5deg) scale(1.05); 
+  }
 }
 
-/* Efectos de glow con nueva paleta */
+@keyframes bounce-gentle {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-8px); 
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 4px 20px rgba(224, 254, 254, 0.6);
+  }
+  50% { 
+    box-shadow: 0 8px 40px rgba(224, 254, 254, 0.9);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Enhanced Text Effects */
 .pet-glow-cyan { 
-  text-shadow: 0 0 10px hsla(183, 100%, 94%, 0.6);
-  transition: text-shadow 0.3s ease;
+  color: #000;
+  text-shadow: 0 0 20px hsl(183, 100%, 70%), 0 0 40px hsl(183, 100%, 80%);
+  font-weight: 700;
 }
 
 .pet-glow-blue { 
-  text-shadow: 0 0 10px hsla(235, 55%, 85%, 0.6);
-  transition: text-shadow 0.3s ease;
+  color: #000;
+  text-shadow: 0 0 20px hsl(235, 55%, 65%), 0 0 40px hsl(235, 55%, 75%);
+  font-weight: 700;
 }
 
 .pet-glow-peach { 
-  text-shadow: 0 0 10px hsla(27, 100%, 88%, 0.6);
-  transition: text-shadow 0.3s ease;
+  color: #000;
+  text-shadow: 0 0 20px hsl(27, 100%, 68%), 0 0 40px hsl(27, 100%, 78%);
+  font-weight: 700;
 }
 
 .pet-glow-pink { 
-  text-shadow: 0 0 10px hsla(352, 100%, 81%, 0.6);
-  transition: text-shadow 0.3s ease;
+  color: #000;
+  text-shadow: 0 0 20px hsl(352, 100%, 61%), 0 0 40px hsl(352, 100%, 71%);
+  font-weight: 700;
 }
 
 .pet-glow-yellow { 
-  text-shadow: 0 0 10px hsla(60, 100%, 93%, 0.6);
-  transition: text-shadow 0.3s ease;
+  color: #000;
+  text-shadow: 0 0 20px hsl(60, 100%, 73%), 0 0 40px hsl(60, 100%, 83%);
+  font-weight: 700;
 }
 
 .pet-glow-green { 
-  text-shadow: 0 0 10px hsla(162, 63%, 83%, 0.6);
-  transition: text-shadow 0.3s ease;
+  color: #000;
+  text-shadow: 0 0 20px hsl(162, 63%, 63%), 0 0 40px hsl(162, 63%, 73%);
+  font-weight: 700;
 }
 
-/* Enhanced Card Effects con nueva paleta */
+/* Enhanced Card Effects */
 .pet-card-glow {
-  box-shadow: 0 4px 20px hsla(183, 100%, 94%, 0.4);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-  border: 2px solid hsla(235, 55%, 85%, 0.3);
-  background: hsla(0, 0%, 100%, 0.9);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(224, 254, 254, 0.4), 
+              0 4px 16px rgba(199, 206, 234, 0.3);
+  border: 2px solid rgba(224, 254, 254, 0.6);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
 }
 
 .pet-card-glow:hover {
-  box-shadow: 0 8px 30px hsla(162, 63%, 83%, 0.5);
-  transform: translateY(-3px);
-  border-color: hsla(27, 100%, 88%, 0.5);
+  box-shadow: 0 20px 60px rgba(255, 218, 193, 0.6), 
+              0 10px 30px rgba(255, 154, 162, 0.4);
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(255, 218, 193, 0.8);
 }
 
-/* Enhanced Button Effects con nueva paleta */
-.pet-button-glow {
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-  background: linear-gradient(135deg, hsl(183, 100%, 94%) 0%, hsl(235, 55%, 85%) 100%);
-  color: #000000;
-  border: none;
+/* Enhanced Button Effects */
+.pet-button-primary {
+  background: linear-gradient(135deg, 
+    hsl(183, 100%, 94%) 0%, 
+    hsl(235, 55%, 85%) 50%, 
+    hsl(27, 100%, 88%) 100%);
+  color: #000;
+  font-weight: 700;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(224, 254, 254, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.pet-button-glow:hover {
-  box-shadow: 0 6px 20px hsla(352, 100%, 81%, 0.4);
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, hsl(27, 100%, 88%) 0%, hsl(162, 63%, 83%) 100%);
+.pet-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transition: left 0.5s;
+}
+
+.pet-button-primary:hover::before {
+  left: 100%;
+}
+
+.pet-button-primary:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(255, 154, 162, 0.5);
+  background: linear-gradient(135deg, 
+    hsl(27, 100%, 88%) 0%, 
+    hsl(352, 100%, 81%) 50%, 
+    hsl(162, 63%, 83%) 100%);
 }
 
 /* Enhanced Icon Effects */
 .pet-icon-interactive {
   display: inline-block;
-  transition: transform 0.3s ease, filter 0.3s ease;
-  filter: drop-shadow(0 2px 4px hsla(183, 100%, 94%, 0.5));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 8px rgba(224, 254, 254, 0.6));
+  font-size: 1.2em;
 }
 
 .pet-icon-interactive:hover {
-  transform: scale(1.2) rotate(5deg);
-  filter: drop-shadow(0 4px 8px hsla(235, 55%, 85%, 0.6));
+  transform: scale(1.3) rotate(10deg);
+  filter: drop-shadow(0 4px 15px rgba(255, 218, 193, 0.8));
+  animation: bounce-gentle 0.6s ease-in-out;
 }
 
-/* Enhanced Link Effects con nueva paleta */
+/* Enhanced Link Effects */
 .pet-link-glow {
   position: relative;
-  transition: color 0.3s ease;
-  color: #000000;
+  color: #000;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .pet-link-glow::after {
@@ -177,49 +238,93 @@
   position: absolute;
   width: 0;
   height: 3px;
-  bottom: -3px;
+  bottom: -5px;
   left: 0;
-  background: linear-gradient(90deg, hsl(183, 100%, 94%), hsl(27, 100%, 88%));
-  transition: width 0.3s ease;
-  border-radius: 2px;
+  background: linear-gradient(90deg, 
+    hsl(183, 100%, 94%), 
+    hsl(27, 100%, 88%), 
+    hsl(352, 100%, 81%));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 3px;
+  box-shadow: 0 2px 10px rgba(224, 254, 254, 0.5);
 }
 
 .pet-link-glow:hover::after {
   width: 100%;
 }
 
-/* Page Animation */
+.pet-link-glow:hover {
+  color: #000;
+  text-shadow: 0 0 10px rgba(224, 254, 254, 0.8);
+}
+
+/* Page Animations */
 .page-enter {
-  animation: page-enter 0.6s ease-out;
+  animation: fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Float Animations */
 .animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float-delayed 4s ease-in-out infinite;
-}
-
-/* Floating Paw Animation */
-.floating-paw {
   animation: float 6s ease-in-out infinite;
-  filter: drop-shadow(0 2px 4px hsla(183, 100%, 94%, 0.5));
 }
 
-/* Performance Optimizations */
-* {
-  backface-visibility: hidden;
+.animate-bounce-gentle {
+  animation: bounce-gentle 3s ease-in-out infinite;
 }
 
-.pet-card-glow,
-.pet-button-glow,
-.pet-icon-interactive {
-  will-change: transform;
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
 }
 
-/* Reduce motion for accessibility */
+/* Shimmer Effect */
+.shimmer {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.8) 50%, 
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced Glass Effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Tenant-specific Gradients */
+.tenant-catshop {
+  background: linear-gradient(135deg, 
+    hsl(183, 100%, 94%) 0%, 
+    hsl(235, 55%, 85%) 100%);
+}
+
+.tenant-dogshop {
+  background: linear-gradient(135deg, 
+    hsl(27, 100%, 88%) 0%, 
+    hsl(352, 100%, 81%) 100%);
+}
+
+.tenant-vetshop {
+  background: linear-gradient(135deg, 
+    hsl(162, 63%, 83%) 0%, 
+    hsl(60, 100%, 93%) 100%);
+}
+
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -230,4 +335,16 @@
   body {
     animation: none !important;
   }
+}
+
+/* High contrast text */
+.text-high-contrast {
+  color: rgb(17, 24, 39);
+  font-weight: 600;
+}
+
+/* Enhanced visibility */
+.enhanced-visibility {
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  font-weight: 700;
 }
