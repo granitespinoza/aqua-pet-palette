@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useTenant } from '@/contexts/TenantContext';
 import productsData from '../data/products.json';
 import brandsData from '../data/brands.json';
 import categoriesData from '../data/categories.json';
@@ -35,6 +36,7 @@ export const useFilteredProducts = (productsPerPage: number = 20) => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const { tenantId } = useTenant();
 
   // Get current page from URL params
   useEffect(() => {
@@ -50,6 +52,20 @@ export const useFilteredProducts = (productsPerPage: number = 20) => {
       newSearchParams.set('page', page.toString());
     }
     setSearchParams(newSearchParams);
+  };
+
+  // Get tenant-specific categories
+  const getTenantCategories = (tenantId: string | null): string[] => {
+    switch (tenantId) {
+      case 'dogshop':
+        return ['perros'];
+      case 'catshop':
+        return ['gatos'];
+      case 'vetshop':
+        return ['otras-mascotas', 'liquidacion']; // VetShop shows general care products
+      default:
+        return ['perros', 'gatos', 'otras-mascotas', 'liquidacion']; // Portal shows all
+    }
   };
 
   useEffect(() => {
@@ -75,10 +91,20 @@ export const useFilteredProducts = (productsPerPage: number = 20) => {
       const categoria = searchParams.get('categoria');
       const marca = searchParams.get('marca');
       
-      console.log('Filtering with:', { categoria, marca });
+      console.log('Filtering with:', { categoria, marca, tenantId });
 
       let filtered = getProducts();
       console.log('Total products before filtering:', filtered.length);
+
+      // Apply tenant-specific filtering first
+      if (tenantId) {
+        const allowedCategories = getTenantCategories(tenantId);
+        filtered = filtered.filter((product: Product) => {
+          const matches = allowedCategories.includes(product.categoriaId);
+          return matches;
+        });
+        console.log(`Products after tenant filter (${tenantId}):`, filtered.length);
+      }
 
       if (categoria) {
         filtered = filtered.filter((product: Product) => {
@@ -108,18 +134,24 @@ export const useFilteredProducts = (productsPerPage: number = 20) => {
     };
 
     filterProducts();
-  }, [searchParams]);
+  }, [searchParams, tenantId]);
 
   // Listen for localStorage changes
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'products_public') {
         console.log('Storage changed, refetching products');
-        // Trigger re-filter when products change
+        
         const categoria = searchParams.get('categoria');
         const marca = searchParams.get('marca');
         
         let filtered = e.newValue ? JSON.parse(e.newValue) : productsData as Product[];
+
+        // Apply tenant filtering
+        if (tenantId) {
+          const allowedCategories = getTenantCategories(tenantId);
+          filtered = filtered.filter((product: Product) => allowedCategories.includes(product.categoriaId));
+        }
 
         if (categoria) {
           filtered = filtered.filter((product: Product) => product.categoriaId === categoria);
@@ -138,7 +170,16 @@ export const useFilteredProducts = (productsPerPage: number = 20) => {
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [searchParams]);
+  }, [searchParams, tenantId]);
+
+  // Get tenant-specific categories for UI
+  const getFilteredCategories = (): Category[] => {
+    const allCategories = categoriesData as Category[];
+    if (!tenantId) return allCategories;
+    
+    const allowedCategories = getTenantCategories(tenantId);
+    return allCategories.filter(cat => allowedCategories.includes(cat.id));
+  };
 
   // Calculate pagination
   const totalProducts = filteredProducts.length;
@@ -150,7 +191,7 @@ export const useFilteredProducts = (productsPerPage: number = 20) => {
   return {
     products: paginatedProducts,
     brands: brandsData as Brand[],
-    categories: categoriesData as Category[],
+    categories: getFilteredCategories(),
     totalProducts,
     loading,
     currentPage,

@@ -1,4 +1,7 @@
-
+import { useTenant } from '@/contexts/TenantContext';
+import DogShopHome from '@/components/tenant/DogShopHome';
+import CatShopHome from '@/components/tenant/CatShopHome';
+import VetShopHome from '@/components/tenant/VetShopHome';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +12,22 @@ import brandsData from '../data/brands.json';
 import { Product, Brand } from '@/hooks/useFilteredProducts';
 
 const Home = () => {
+  const { tenantId } = useTenant();
+
+  // Render tenant-specific home page
+  switch (tenantId) {
+    case 'dogshop':
+      return <DogShopHome />;
+    case 'catshop':
+      return <CatShopHome />;
+    case 'vetshop':
+      return <VetShopHome />;
+    default:
+      // Default home page (original content) - this shouldn't happen in normal flow
+      // but keeping as fallback
+      break;
+  }
+
   const featuredProducts = (productsData as Product[]).filter(p => p.is_featured);
   const brands = brandsData as Brand[];
 
