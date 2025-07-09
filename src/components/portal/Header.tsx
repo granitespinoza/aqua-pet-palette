@@ -1,5 +1,4 @@
 
-import { Link } from 'react-router-dom';
 import { Heart, UserCircle, ShoppingCart, Truck, Phone, Mail } from 'lucide-react';
 
 const Header = () => {
@@ -31,12 +30,12 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
               <span className="text-white text-xl">🐾</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">GO Pet</span>
-          </Link>
+          </div>
 
           {/* Right Icons */}
           <div className="flex items-center space-x-6">

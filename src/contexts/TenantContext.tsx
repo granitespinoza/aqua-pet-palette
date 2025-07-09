@@ -16,6 +16,7 @@ interface TenantContextType {
   tenantId: string | null;
   isLoading: boolean;
   isPortal: boolean;
+  setSelectedTenant: (tenantId: string | null) => void;
 }
 
 const TenantContext = createContext<TenantContextType>({
@@ -23,6 +24,7 @@ const TenantContext = createContext<TenantContextType>({
   tenantId: null,
   isLoading: true,
   isPortal: false,
+  setSelectedTenant: () => {},
 });
 
 const TENANT_CONFIGS: Record<string, TenantConfig> = {
@@ -61,6 +63,32 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isLoading, setIsLoading] = useState(true);
   const [isPortal, setIsPortal] = useState(false);
 
+  const setSelectedTenant = (selectedTenantId: string | null) => {
+    console.log('Setting selected tenant:', selectedTenantId);
+    
+    if (selectedTenantId && TENANT_CONFIGS[selectedTenantId]) {
+      const tenantConfig = TENANT_CONFIGS[selectedTenantId];
+      setTenantId(selectedTenantId);
+      setTenant(tenantConfig);
+      setIsPortal(false);
+      
+      // Update document title and favicon
+      document.title = tenantConfig.name;
+      
+      // Update favicon
+      const favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+      if (favicon) {
+        favicon.href = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${tenantConfig.favicon}</text></svg>`;
+      }
+    } else {
+      // Volver al portal
+      setTenantId(null);
+      setTenant(null);
+      setIsPortal(true);
+      document.title = 'GO Pet - El universo para tu mascota';
+    }
+  };
+
   useEffect(() => {
     const detectTenant = () => {
       const hostname = window.location.hostname;
@@ -88,19 +116,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       console.log('Final detected tenant:', detectedTenantId);
       
       if (detectedTenantId) {
-        const tenantConfig = TENANT_CONFIGS[detectedTenantId];
-        setTenantId(detectedTenantId);
-        setTenant(tenantConfig);
-        setIsPortal(false);
-        
-        // Update document title and favicon
-        document.title = tenantConfig.name;
-        
-        // Update favicon
-        const favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-        if (favicon) {
-          favicon.href = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${tenantConfig.favicon}</text></svg>`;
-        }
+        setSelectedTenant(detectedTenantId);
       } else {
         // Estamos en el portal principal
         console.log('No tenant detected, showing portal');
@@ -118,7 +134,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, []);
 
   return (
-    <TenantContext.Provider value={{ tenant, tenantId, isLoading, isPortal }}>
+    <TenantContext.Provider value={{ tenant, tenantId, isLoading, isPortal, setSelectedTenant }}>
       {children}
     </TenantContext.Provider>
   );

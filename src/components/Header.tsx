@@ -18,7 +18,7 @@ import SearchBar from './SearchBar';
 const Header = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user, logout } = useUser();
-  const { tenant } = useTenant();
+  const { tenant, setSelectedTenant } = useTenant();
 
   const getTenantIcon = () => {
     switch (tenant?.id) {
@@ -46,6 +46,10 @@ const Header = () => {
     }
   };
 
+  const handleBackToPortal = () => {
+    setSelectedTenant(null);
+  };
+
   return (
     <header className="header-professional sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -57,10 +61,20 @@ const Header = () => {
               <span className="text-high-contrast">GO Pet</span>
             </Link>
             
-            {/* Tenant Indicator */}
+            {/* Tenant Indicator y Botón de Portal */}
             <div className="tenant-indicator flex items-center space-x-2">
               <span className="text-lg">{getTenantIcon()}</span>
               <span className="text-sm font-semibold">{getTenantName()}</span>
+              {tenant && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleBackToPortal}
+                  className="text-xs text-blue-600 hover:text-blue-800"
+                >
+                  Volver al Portal
+                </Button>
+              )}
             </div>
           </div>
 

@@ -1,4 +1,7 @@
 
+import React from 'react';
+import { useTenant } from '@/contexts/TenantContext';
+
 interface TenantCardProps {
   tenantName: string;
   tenantId: string;
@@ -14,17 +17,13 @@ const TenantCard: React.FC<TenantCardProps> = ({
   backgroundImageUrl,
   buttonText
 }) => {
+  const { setSelectedTenant } = useTenant();
+
   const handleClick = () => {
     console.log('TenantCard clicked:', tenantId);
-    // En desarrollo, usamos parámetros de URL
-    if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1') || window.location.hostname.includes('lovableproject.com')) {
-      const newUrl = `${window.location.origin}?tenant=${tenantId}`;
-      console.log('Redirecting to:', newUrl);
-      window.location.href = newUrl;
-    } else {
-      // En producción, redirigir al subdominio
-      window.location.href = `https://${tenantId}.gopet.com`;
-    }
+    // Para demo, usamos el contexto interno
+    setSelectedTenant(tenantId);
+    // En un futuro, esta redirección se realizará a subdominios reales de AWS/DNS.
   };
 
   return (
