@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Menu, LogOut, Sparkles } from 'lucide-react';
@@ -88,7 +89,7 @@ const Header = () => {
               {user ? (
                 <div className="flex items-center space-x-3">
                   <span className="text-professional">
-                    Hola, {user.nombre}
+                    Hola, {user.profile.nombre}
                   </span>
                   <Button
                     variant="ghost"
