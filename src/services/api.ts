@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { useTenant } from '@/contexts/TenantContext';
 
 // Centralized API client for multi-tenant architecture
