@@ -26,12 +26,12 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(220, 90%, 56%)',
-					foreground: 'hsl(0, 0%, 100%)'
+					DEFAULT: 'hsl(183, 100%, 94%)', // #E0FEFE
+					foreground: 'hsl(0, 0%, 0%)' // Negro
 				},
 				secondary: {
-					DEFAULT: 'hsl(45, 100%, 51%)',
-					foreground: 'hsl(0, 0%, 0%)'
+					DEFAULT: 'hsl(235, 55%, 85%)', // #C7CEEA
+					foreground: 'hsl(0, 0%, 0%)' // Negro
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -39,7 +39,7 @@ export default {
 				},
 				muted: {
 					DEFAULT: 'hsl(210, 40%, 96%)',
-					foreground: 'hsl(var(--muted-foreground))'
+					foreground: 'hsl(0, 0%, 0%)' // Negro
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
@@ -63,16 +63,36 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Paleta personalizada para modo blanco
-				blue: {
-					DEFAULT: 'hsl(220, 90%, 56%)',
-					bright: 'hsl(220, 90%, 56%)',
-					glow: 'hsla(220, 90%, 56%, 0.3)'
+				// Nueva paleta personalizada
+				'pastel-cyan': {
+					DEFAULT: 'hsl(183, 100%, 94%)', // #E0FEFE
+					bright: 'hsl(183, 100%, 94%)',
+					glow: 'hsla(183, 100%, 94%, 0.3)'
 				},
-				yellow: {
-					DEFAULT: 'hsl(45, 100%, 51%)',
-					bright: 'hsl(45, 100%, 51%)',
-					glow: 'hsla(45, 100%, 51%, 0.3)'
+				'pastel-blue': {
+					DEFAULT: 'hsl(235, 55%, 85%)', // #C7CEEA
+					bright: 'hsl(235, 55%, 85%)',
+					glow: 'hsla(235, 55%, 85%, 0.3)'
+				},
+				'pastel-peach': {
+					DEFAULT: 'hsl(27, 100%, 88%)', // #FFDAC1
+					bright: 'hsl(27, 100%, 88%)',
+					glow: 'hsla(27, 100%, 88%, 0.3)'
+				},
+				'pastel-pink': {
+					DEFAULT: 'hsl(352, 100%, 81%)', // #FF9AA2
+					bright: 'hsl(352, 100%, 81%)',
+					glow: 'hsla(352, 100%, 81%, 0.3)'
+				},
+				'pastel-yellow': {
+					DEFAULT: 'hsl(60, 100%, 93%)', // #FFFFD8
+					bright: 'hsl(60, 100%, 93%)',
+					glow: 'hsla(60, 100%, 93%, 0.3)'
+				},
+				'pastel-green': {
+					DEFAULT: 'hsl(162, 63%, 83%)', // #B5EAD7
+					bright: 'hsl(162, 63%, 83%)',
+					glow: 'hsla(162, 63%, 83%, 0.3)'
 				}
 			},
 			borderRadius: {
