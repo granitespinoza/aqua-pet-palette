@@ -120,10 +120,7 @@ const ProductCard = ({
               </div>
 
               {/* Rating stars */}
-              <div className="flex items-center space-x-1">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-pastel-yellow text-pastel-yellow" />)}
-                <span className="text-sm text-gray-600 font-semibold ml-2">(4.8) 127 reseñas</span>
-              </div>
+              
             </div>
           </Link>
           
@@ -138,7 +135,7 @@ const ProductCard = ({
             
             <Button size="sm" onClick={handleAddToCart} className="pet-button-primary hover:scale-110 transition-all duration-300 font-extra-bold px-0">
               <ShoppingCart className="w-4 h-4 mr-2" />
-              <span className="pet-icon-interactive mr-1">🛒</span>
+              
               Agregar
             </Button>
           </div>
