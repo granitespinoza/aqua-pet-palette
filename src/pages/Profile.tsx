@@ -112,25 +112,17 @@ const Profile = () => {
                       <div className="text-xs text-neutral-500">Pedidos</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-neutral-900">4.9</div>
-                      <div className="text-xs text-neutral-500">Rating</div>
+                      
+                      
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold text-neutral-900">
                     </div>
-                      <div className="text-xs text-neutral-500">Años</div>
+                      
                     </div>
                   </div>
                   
-                  <div className="glass-effect rounded-xl p-4 border border-white/20">
-                    <div className="flex items-center space-x-3">
-                      <Award className={`w-6 h-6 ${branding.accentColor}`} />
-                      <div className="text-left">
-                        <div className="font-semibold text-neutral-900">Cliente VIP</div>
-                        <div className="text-sm text-neutral-600">Beneficios exclusivos</div>
-                      </div>
-                    </div>
-                  </div>
+                  
                 </CardContent>
               </Card>
             </div>
@@ -181,33 +173,8 @@ const Profile = () => {
 
               {/* Account Settings */}
               <Card className="card-professional border-0 shadow-medium bg-white/80 backdrop-blur-md">
-                <CardHeader className="border-b border-neutral-100">
-                  <CardTitle className={`flex items-center gap-3 ${branding.accentColor}`}>
-                    <Shield className="h-6 w-6" />
-                    Configuración de Cuenta
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-8 space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-neutral-50 rounded-xl border border-neutral-200">
-                    <div>
-                      <div className="font-semibold text-neutral-900">Notificaciones por Email</div>
-                      <div className="text-sm text-neutral-600">Recibe actualizaciones de pedidos</div>
-                    </div>
-                    <div className="w-12 h-6 bg-success-500 rounded-full relative">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-4 bg-neutral-50 rounded-xl border border-neutral-200">
-                    <div>
-                      <div className="font-semibold text-neutral-900">Ofertas y Promociones</div>
-                      <div className="text-sm text-neutral-600">Recibe ofertas especiales</div>
-                    </div>
-                    <div className="w-12 h-6 bg-success-500 rounded-full relative">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                </CardContent>
+                
+                
               </Card>
             </div>
           </div>
