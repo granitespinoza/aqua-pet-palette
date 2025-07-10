@@ -1,8 +1,43 @@
+
 import { Heart, UserCircle, ShoppingCart, Truck, Phone, Mail, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  return <header className="header-professional">
+
+  // Smooth scroll function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerHeight = 80; // Approximate header height
+      const elementPosition = element.offsetTop - headerHeight;
+      
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
+      });
+    }
+    
+    // Close mobile menu if open
+    setIsMobileMenuOpen(false);
+  };
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobileMenuOpen && !(event.target as Element).closest('.mobile-menu-container')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
+
+  return (
+    <header className="header-professional">
       {/* Pre-Header */}
       <div className="bg-neutral-900 text-neutral-200">
         <div className="container-professional">
@@ -28,7 +63,7 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-border/20">
+      <div className="bg-white/95 backdrop-blur-md border-b border-border/20 sticky top-0 z-50">
         <div className="container-professional">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -51,27 +86,59 @@ const Header = () => {
 
             {/* Navigation - Desktop */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#tiendas" className="nav-link">Nuestras Tiendas</a>
-              <a href="#servicios" className="nav-link">Servicios</a>
-              <a href="#contacto" className="nav-link">Contacto</a>
+              <button 
+                onClick={() => scrollToSection('tiendas')} 
+                className="nav-link cursor-pointer"
+              >
+                Nuestras Tiendas
+              </button>
+              <button 
+                onClick={() => scrollToSection('servicios')} 
+                className="nav-link cursor-pointer"
+              >
+                Servicios
+              </button>
+              <button 
+                onClick={() => scrollToSection('contacto')} 
+                className="nav-link cursor-pointer"
+              >
+                Contacto
+              </button>
             </nav>
 
-            {/* Action Buttons */}
-            
+            {/* Mobile Menu Button */}
+            <div className="md:hidden mobile-menu-container">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 rounded-lg text-neutral-600 hover:text-primary hover:bg-neutral-50 transition-colors"
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
 
           {/* Mobile Navigation */}
-          {isMobileMenuOpen && <div className="md:hidden border-t border-border/20 py-4 animate-slide-up">
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-border/20 py-4 animate-slide-up mobile-menu-container">
               <nav className="flex flex-col space-y-4">
-                <a href="#tiendas" className="text-neutral-600 hover:text-primary transition-colors py-2">
+                <button
+                  onClick={() => scrollToSection('tiendas')}
+                  className="text-neutral-600 hover:text-primary transition-colors py-2 text-left"
+                >
                   Nuestras Tiendas
-                </a>
-                <a href="#servicios" className="text-neutral-600 hover:text-primary transition-colors py-2">
+                </button>
+                <button
+                  onClick={() => scrollToSection('servicios')}
+                  className="text-neutral-600 hover:text-primary transition-colors py-2 text-left"
+                >
                   Servicios
-                </a>
-                <a href="#contacto" className="text-neutral-600 hover:text-primary transition-colors py-2">
+                </button>
+                <button
+                  onClick={() => scrollToSection('contacto')}
+                  className="text-neutral-600 hover:text-primary transition-colors py-2 text-left"
+                >
                   Contacto
-                </a>
+                </button>
                 <div className="flex items-center space-x-4 pt-4 border-t border-border/20">
                   <button className="flex items-center space-x-2 text-neutral-600">
                     <Heart className="w-5 h-5" />
@@ -83,9 +150,12 @@ const Header = () => {
                   </button>
                 </div>
               </nav>
-            </div>}
+            </div>
+          )}
         </div>
       </div>
-    </header>;
+    </header>
+  );
 };
+
 export default Header;

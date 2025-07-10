@@ -3,6 +3,7 @@ import Header from '@/components/portal/Header';
 import Footer from '@/components/portal/Footer';
 import HeroBanner from '@/components/portal/HeroBanner';
 import TenantSelector from '@/components/portal/TenantSelector';
+import ServicesSection from '@/components/portal/ServicesSection';
 
 const Portal = () => {
   console.log('Portal component rendering');
@@ -13,6 +14,7 @@ const Portal = () => {
       <main className="flex-1">
         <HeroBanner />
         <TenantSelector />
+        <ServicesSection />
       </main>
       <Footer />
     </div>

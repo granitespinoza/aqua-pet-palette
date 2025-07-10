@@ -1,13 +1,18 @@
+
 import { useState } from 'react';
 import { MapPin, Phone, Mail, Heart } from 'lucide-react';
+
 const Footer = () => {
   const [email, setEmail] = useState('');
+
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Newsletter subscription:', email);
     setEmail('');
   };
-  return <footer className="footer-professional">
+
+  return (
+    <footer id="contacto" className="footer-professional">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -40,7 +45,7 @@ const Footer = () => {
             <h3 className="text-white font-semibold text-lg">Enlaces Rápidos</h3>
             <div className="space-y-2">
               <a href="#" className="block text-gray-400 hover:text-white transition-colors">Sobre Nosotros</a>
-              <a href="#" className="block text-gray-400 hover:text-white transition-colors">Nuestras Tiendas</a>
+              <a href="#tiendas" className="block text-gray-400 hover:text-white transition-colors">Nuestras Tiendas</a>
               <a href="#" className="block text-gray-400 hover:text-white transition-colors">Política de Envíos</a>
               <a href="#" className="block text-gray-400 hover:text-white transition-colors">Términos y Condiciones</a>
               <a href="#" className="block text-gray-400 hover:text-white transition-colors">Política de Privacidad</a>
@@ -48,7 +53,7 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div className="space-y-4 my-0 px-0">
+          <div className="space-y-4">
             <h3 className="text-white font-semibold text-lg">Contacto</h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
@@ -67,7 +72,28 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          
+          <div className="space-y-4">
+            <h3 className="text-white font-semibold text-lg">Newsletter</h3>
+            <p className="text-gray-400 text-sm">
+              Suscríbete para recibir ofertas especiales y noticias sobre el cuidado de mascotas.
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Tu email"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+              >
+                Suscribirse
+              </button>
+            </form>
+          </div>
         </div>
 
         {/* Bottom Bar */}
@@ -81,6 +107,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
