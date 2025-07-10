@@ -1,47 +1,46 @@
-
 import { useState } from 'react';
 import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '@/lib/formatPrice';
 import products from '@/data/products.json';
 import AuthModal from '@/components/AuthModal';
-
 const Cart = () => {
-  const { items, incrementItem, decrementItem, removeItem, clearCart, getTotalItems } = useCart();
-  const { user } = useUser();
+  const {
+    items,
+    incrementItem,
+    decrementItem,
+    removeItem,
+    clearCart,
+    getTotalItems
+  } = useCart();
+  const {
+    user
+  } = useUser();
   const navigate = useNavigate();
   const [authModalOpen, setAuthModalOpen] = useState(false);
-
   const cartProducts = items.map(item => {
     const product = products.find(p => String(p.id) === item.id);
-    return product ? { ...product, quantity: item.quantity } : null;
+    return product ? {
+      ...product,
+      quantity: item.quantity
+    } : null;
   }).filter(Boolean);
-
   const getSubtotal = () => {
     return cartProducts.reduce((total, item) => {
       if (!item) return total;
       const price = item.precioOferta || item.precio;
-      return total + (price * item.quantity);
+      return total + price * item.quantity;
     }, 0);
   };
-
   const subtotal = getSubtotal();
   const shipping = subtotal >= 100 ? 0 : 10; // Envío gratis si subtotal >= S/ 100.00
   const total = subtotal + shipping;
-
   const handleQuantityChange = (productId: string, newQuantity: string) => {
     const qty = parseInt(newQuantity);
     if (qty >= 1) {
@@ -60,7 +59,6 @@ const Cart = () => {
       }
     }
   };
-
   const handleCheckout = () => {
     if (!user) {
       setAuthModalOpen(true);
@@ -68,10 +66,8 @@ const Cart = () => {
       navigate('/checkout');
     }
   };
-
   if (cartProducts.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
+    return <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-md mx-auto bg-white/80 backdrop-blur-sm border border-blue-100">
             <CardContent className="p-8 text-center">
@@ -82,21 +78,15 @@ const Cart = () => {
               <p className="text-gray-600 mb-6">
                 ¡Agrega algunos productos y vuelve aquí para finalizar tu compra!
               </p>
-              <Button
-                onClick={() => navigate('/catalogo')}
-                className="bg-primary hover:bg-blue-700 text-white"
-              >
+              <Button onClick={() => navigate('/catalogo')} className="bg-primary hover:bg-blue-700 text-white">
                 Ir a comprar
               </Button>
             </CardContent>
           </Card>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -109,12 +99,7 @@ const Cart = () => {
               <Card className="bg-white/80 backdrop-blur-sm border border-blue-100">
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Productos</CardTitle>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={clearCart}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
+                  <Button variant="outline" size="sm" onClick={clearCart} className="text-red-600 hover:text-red-700 hover:bg-red-50">
                     <Trash2 className="w-4 h-4 mr-2" />
                     Vaciar carrito
                   </Button>
@@ -122,19 +107,13 @@ const Cart = () => {
                 <CardContent>
                   {/* Vista móvil */}
                   <div className="block md:hidden space-y-4">
-                    {cartProducts.map((item) => {
-                      if (!item) return null;
-                      const price = item.precioOferta || item.precio;
-                      const itemSubtotal = price * item.quantity;
-
-                      return (
-                        <div key={item.id} className="border rounded-lg p-4 space-y-3">
+                    {cartProducts.map(item => {
+                    if (!item) return null;
+                    const price = item.precioOferta || item.precio;
+                    const itemSubtotal = price * item.quantity;
+                    return <div key={item.id} className="border rounded-lg p-4 space-y-3">
                           <div className="flex items-start space-x-3">
-                            <img
-                              src={item.img}
-                              alt={item.nombre}
-                              className="w-16 h-16 object-cover rounded"
-                            />
+                            <img src={item.img} alt={item.nombre} className="w-16 h-16 object-cover rounded" />
                             <div className="flex-1">
                               <h4 className="font-medium text-gray-900 line-clamp-2">
                                 {item.nombre}
@@ -143,39 +122,18 @@ const Cart = () => {
                                 {formatPrice(price)}
                               </p>
                             </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeItem(String(item.id))}
-                              className="text-red-500 hover:text-red-700"
-                            >
+                            <Button variant="ghost" size="sm" onClick={() => removeItem(String(item.id))} className="text-red-500 hover:text-red-700">
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                           
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => decrementItem(String(item.id))}
-                                className="w-8 h-8 p-0"
-                              >
+                              <Button variant="outline" size="sm" onClick={() => decrementItem(String(item.id))} className="w-8 h-8 p-0">
                                 <Minus className="w-3 h-3" />
                               </Button>
-                              <Input
-                                type="number"
-                                value={item.quantity}
-                                onChange={(e) => handleQuantityChange(String(item.id), e.target.value)}
-                                className="w-16 text-center"
-                                min="1"
-                              />
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => incrementItem(String(item.id))}
-                                className="w-8 h-8 p-0"
-                              >
+                              <Input type="number" value={item.quantity} onChange={e => handleQuantityChange(String(item.id), e.target.value)} className="w-16 text-center" min="1" />
+                              <Button variant="outline" size="sm" onClick={() => incrementItem(String(item.id))} className="w-8 h-8 p-0">
                                 <Plus className="w-3 h-3" />
                               </Button>
                             </div>
@@ -185,9 +143,8 @@ const Cart = () => {
                               </p>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        </div>;
+                  })}
                   </div>
 
                   {/* Vista desktop */}
@@ -203,20 +160,14 @@ const Cart = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {cartProducts.map((item) => {
-                          if (!item) return null;
-                          const price = item.precioOferta || item.precio;
-                          const itemSubtotal = price * item.quantity;
-
-                          return (
-                            <TableRow key={item.id}>
+                        {cartProducts.map(item => {
+                        if (!item) return null;
+                        const price = item.precioOferta || item.precio;
+                        const itemSubtotal = price * item.quantity;
+                        return <TableRow key={item.id}>
                               <TableCell>
                                 <div className="flex items-center space-x-3">
-                                  <img
-                                    src={item.img}
-                                    alt={item.nombre}
-                                    className="w-16 h-16 object-cover rounded"
-                                  />
+                                  <img src={item.img} alt={item.nombre} className="w-16 h-16 object-cover rounded" />
                                   <div>
                                     <h4 className="font-medium text-gray-900 line-clamp-2">
                                       {item.nombre}
@@ -226,27 +177,11 @@ const Cart = () => {
                               </TableCell>
                               <TableCell>
                                 <div className="flex items-center justify-center space-x-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => decrementItem(String(item.id))}
-                                    className="w-8 h-8 p-0"
-                                  >
+                                  <Button variant="outline" size="sm" onClick={() => decrementItem(String(item.id))} className="w-8 h-8 p-0">
                                     <Minus className="w-3 h-3" />
                                   </Button>
-                                  <Input
-                                    type="number"
-                                    value={item.quantity}
-                                    onChange={(e) => handleQuantityChange(String(item.id), e.target.value)}
-                                    className="w-16 text-center"
-                                    min="1"
-                                  />
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => incrementItem(String(item.id))}
-                                    className="w-8 h-8 p-0"
-                                  >
+                                  <Input type="number" value={item.quantity} onChange={e => handleQuantityChange(String(item.id), e.target.value)} className="w-16 text-center" min="1" />
+                                  <Button variant="outline" size="sm" onClick={() => incrementItem(String(item.id))} className="w-8 h-8 p-0">
                                     <Plus className="w-3 h-3" />
                                   </Button>
                                 </div>
@@ -254,22 +189,16 @@ const Cart = () => {
                               <TableCell className="text-right">
                                 {formatPrice(price)}
                               </TableCell>
-                              <TableCell className="text-right font-semibold text-primary">
+                              <TableCell className="text-right font-semibold text-primary bg-gray-400">
                                 {formatPrice(itemSubtotal)}
                               </TableCell>
                               <TableCell>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => removeItem(String(item.id))}
-                                  className="text-red-500 hover:text-red-700"
-                                >
+                                <Button variant="ghost" size="sm" onClick={() => removeItem(String(item.id))} className="text-red-500 hover:text-red-700">
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
                               </TableCell>
-                            </TableRow>
-                          );
-                        })}
+                            </TableRow>;
+                      })}
                       </TableBody>
                     </Table>
                   </div>
@@ -296,11 +225,9 @@ const Cart = () => {
                     </span>
                   </div>
                   
-                  {shipping > 0 && (
-                    <p className="text-xs text-gray-500">
+                  {shipping > 0 && <p className="text-xs text-gray-500">
                       Envío gratis en compras sobre {formatPrice(100)}
-                    </p>
-                  )}
+                    </p>}
                   
                   <hr />
                   
@@ -309,18 +236,11 @@ const Cart = () => {
                     <span className="text-primary">{formatPrice(total)}</span>
                   </div>
                   
-                  <Button
-                    onClick={handleCheckout}
-                    className="w-full bg-primary hover:bg-blue-700 text-white py-3"
-                  >
+                  <Button onClick={handleCheckout} className="w-full bg-primary hover:bg-blue-700 text-white py-3">
                     Pagar 💳
                   </Button>
                   
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => navigate('/catalogo')}
-                  >
+                  <Button variant="outline" className="w-full" onClick={() => navigate('/catalogo')}>
                     Seguir comprando
                   </Button>
                 </CardContent>
@@ -329,15 +249,8 @@ const Cart = () => {
           </div>
         </div>
 
-        <AuthModal
-          open={authModalOpen}
-          onOpenChange={setAuthModalOpen}
-          nextRoute="/checkout"
-          message="Inicia sesión para finalizar tu compra"
-        />
+        <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} nextRoute="/checkout" message="Inicia sesión para finalizar tu compra" />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Cart;
