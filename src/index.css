@@ -1,37 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primario-azul: #2563EB;
-  --blanco-neutro: #FFFFFF;
-  --negro-neutro: #1F2937;
-  --luz-gris-neutra: #F9FAFB;
-  --gris-neutro-medio: #E5E7EB;
-  --gris-neutro-oscuro: #6B7280;
-  
-  /* Shadcn UI CSS Variables */
+  /* Professional Color Variables */
   --background: 0 0% 100%;
   --foreground: 224 71.4% 4.1%;
   --card: 0 0% 100%;
   --card-foreground: 224 71.4% 4.1%;
   --popover: 0 0% 100%;
   --popover-foreground: 224 71.4% 4.1%;
-  --primary: 220.9 39.3% 11%;
-  --primary-foreground: 210 20% 98%;
-  --secondary: 220 14.3% 95.9%;
-  --secondary-foreground: 220.9 39.3% 11%;
-  --muted: 220 14.3% 95.9%;
-  --muted-foreground: 220 8.9% 46.1%;
-  --accent: 220 14.3% 95.9%;
-  --accent-foreground: 220.9 39.3% 11%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 98%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 98%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
   --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 20% 98%;
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
-  --ring: 224 71.4% 4.1%;
-  --radius: 0.5rem;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 217 91% 60%;
+  --radius: 0.75rem;
+  
+  /* Professional Shadows */
+  --shadow-soft: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
+  --shadow-medium: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
+  --shadow-large: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 24px rgba(59, 130, 246, 0.15);
 }
 
 @layer base {
@@ -39,288 +39,242 @@
     @apply border-border;
   }
   
+  html {
+    @apply scroll-smooth;
+  }
+  
   body {
-    background-color: var(--luz-gris-neutra);
-    color: var(--negro-neutro);
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
     line-height: 1.6;
   }
-}
-
-/* Enhanced Glass Effect with Better Contrast */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-
-.glass-effect-strong {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Modal Specific Styles */
-.modal-glass {
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-/* Professional Header Styles */
-.header-professional {
-  background: var(--blanco-neutro);
-  border-bottom: 1px solid var(--gris-neutro-medio);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.pre-header {
-  background: var(--luz-gris-neutra);
-  border-bottom: 1px solid var(--gris-neutro-medio);
-  padding: 0.5rem 0;
-  font-size: 0.875rem;
-  color: var(--gris-neutro-oscuro);
-}
-
-/* Professional Card Effects */
-.professional-card {
-  background: var(--blanco-neutro);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 
-              0 2px 6px rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--gris-neutro-medio);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateY(0);
-  border-radius: 12px;
-}
-
-.professional-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 
-              0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-4px);
-}
-
-/* Professional Button Effects */
-.btn-primary-professional {
-  background: var(--primario-azul);
-  color: var(--blanco-neutro);
-  font-weight: 600;
-  border: none;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  padding: 12px 24px;
-}
-
-.btn-primary-professional:hover {
-  background: #1D4ED8;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-  transform: translateY(-2px);
-}
-
-.btn-secondary-professional {
-  background: var(--blanco-neutro);
-  color: var(--negro-neutro);
-  font-weight: 500;
-  border: 1px solid var(--gris-neutro-medio);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  padding: 12px 24px;
-}
-
-.btn-secondary-professional:hover {
-  background: var(--luz-gris-neutra);
-  border-color: var(--gris-neutro-oscuro);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* Professional Footer Styles */
-.footer-professional {
-  background: var(--negro-neutro);
-  color: var(--gris-neutro-oscuro);
-}
-
-/* Hero Banner Styles */
-.hero-banner {
-  position: relative;
-  height: 60vh;
-  min-height: 400px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-content {
-  text-align: center;
-  color: var(--blanco-neutro);
-  max-width: 800px;
-  padding: 0 2rem;
-}
-
-.hero-content h1 {
-  font-size: 3.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-}
-
-.hero-content p {
-  font-size: 1.25rem;
-  font-weight: 400;
-  opacity: 0.9;
-}
-
-/* Tenant Card Styles */
-.tenant-card {
-  position: relative;
-  height: 350px;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.tenant-card:hover {
-  transform: scale(1.02);
-}
-
-.tenant-card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.tenant-card:hover .tenant-card-image {
-  transform: scale(1.1);
-}
-
-.tenant-card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  text-align: center;
-  color: var(--blanco-neutro);
-}
-
-.tenant-card-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-}
-
-.tenant-card-description {
-  font-size: 1.125rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-}
-
-/* Icon Interactive Effects */
-.icon-interactive {
-  display: inline-block;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--gris-neutro-oscuro);
-}
-
-.icon-interactive:hover {
-  transform: scale(1.1);
-  color: var(--primario-azul);
-}
-
-/* Enhanced Visibility Classes */
-.enhanced-visibility {
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.pet-glow-blue {
-  filter: drop-shadow(0 0 2px rgba(37, 99, 235, 0.3));
-}
-
-.pet-card-glow {
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.1);
-  transition: all 0.3s ease;
-}
-
-.pet-card-glow:hover {
-  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.2);
-}
-
-.pet-icon-interactive {
-  display: inline-block;
-  transition: all 0.3s ease;
-}
-
-.pet-icon-interactive:hover {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.animate-bounce-gentle {
-  animation: bounce-gentle 2s infinite;
-}
-
-@keyframes bounce-gentle {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
   }
 }
 
-.watercolor-section {
-  background-image: 
-    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(120, 199, 255, 0.1) 0%, transparent 50%);
-}
-
-/* Page Animations */
-.page-enter {
-  animation: fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes fade-in {
-  0% {
+@layer components {
+  /* Professional Glass Effects */
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-md border border-white/20;
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  
+  .glass-effect-strong {
+    @apply bg-white/90 backdrop-blur-lg border border-white/30;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  
+  .glass-card {
+    @apply glass-effect rounded-xl p-6;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  }
+  
+  /* Professional Button Styles */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+    @apply rounded-lg px-6 py-3 font-medium transition-all duration-200;
+    @apply shadow-soft hover:shadow-medium active:scale-[0.98];
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+    @apply border border-border rounded-lg px-6 py-3 font-medium;
+    @apply transition-all duration-200 shadow-soft hover:shadow-medium;
+  }
+  
+  /* Professional Card Effects */
+  .card-professional {
+    @apply bg-card text-card-foreground rounded-xl border border-border;
+    @apply shadow-soft hover:shadow-medium transition-all duration-300;
+    @apply hover:-translate-y-1;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-professional::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
     opacity: 0;
-    transform: translateY(20px);
+    transition: opacity 0.3s;
   }
-  100% {
+  
+  .card-professional:hover::before {
     opacity: 1;
-    transform: translateY(0);
   }
+  
+  /* Professional Layout Components */
+  .header-professional {
+    @apply sticky top-0 z-50 w-full border-b border-border/40;
+    @apply bg-background/80 backdrop-blur-md;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+  
+  .container-professional {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Hero Section Styles */
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(217, 91%, 60%) 0%,
+      hsl(316, 78%, 52%) 25%,
+      hsl(25, 95%, 53%) 50%,
+      hsl(142, 71%, 45%) 75%,
+      hsl(217, 91%, 60%) 100%
+    );
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease-in-out infinite;
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  /* Tenant Specific Styles */
+  .tenant-dogshop {
+    @apply bg-gradient-to-br from-dogshop-50 to-dogshop-100;
+  }
+  
+  .tenant-catshop {
+    @apply bg-gradient-to-br from-catshop-50 to-catshop-100;
+  }
+  
+  .tenant-vetshop {
+    @apply bg-gradient-to-br from-vetshop-50 to-vetshop-100;
+  }
+  
+  /* Interactive Elements */
+  .interactive-element {
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:scale-105 active:scale-95;
+  }
+  
+  .shimmer-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .shimmer-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+  
+  /* Professional Text Styles */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary via-catshop-500 to-dogshop-500;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .text-professional {
+    @apply text-foreground/80 leading-relaxed;
+  }
+  
+  /* Navigation Styles */
+  .nav-link {
+    @apply relative text-foreground/70 hover:text-foreground;
+    @apply transition-colors duration-200;
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+  
+  /* Page Transitions */
+  .page-enter {
+    animation: fade-up 0.6s ease-out;
+  }
+  
+  .stagger-children > * {
+    animation: fade-up 0.6s ease-out;
+  }
+  
+  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .bg-mesh-gradient {
+    background-image: 
+      radial-gradient(circle at 25% 25%, hsl(217, 91%, 60%, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 25%, hsl(316, 78%, 52%, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 25% 75%, hsl(25, 95%, 53%, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(142, 71%, 45%, 0.1) 0%, transparent 50%);
+  }
 }
 
 /* Accessibility */
@@ -332,21 +286,13 @@
   }
 }
 
-/* Responsive Design */
+/* Professional Responsive Design */
 @media (max-width: 768px) {
-  .hero-content h1 {
-    font-size: 2.5rem;
+  .container-professional {
+    @apply px-4;
   }
   
-  .hero-content p {
-    font-size: 1rem;
-  }
-  
-  .tenant-card-title {
-    font-size: 2rem;
-  }
-  
-  .tenant-card-description {
-    font-size: 1rem;
+  .hero-gradient {
+    background-size: 200% 200%;
   }
 }
