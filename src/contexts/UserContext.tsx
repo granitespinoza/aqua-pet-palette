@@ -58,28 +58,48 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log('🔑 === INICIANDO PROCESO DE LOGIN ===');
-      console.log('🏪 UserContext.login - Current tenant:', tenantId);
-      console.log('👤 UserContext.login - Email:', email);
+      console.log('🔑 === INICIANDO PROCESO DE LOGIN EN USERCONTEXT ===');
+      console.log('🏪 Tenant actual:', tenantId);
+      console.log('👤 Email a validar:', email);
       
       // Preparar datos para API con tenant_id
       const apiTenantId = getTenantId(tenantId);
+      console.log('🔄 Tenant mapeado:', `${tenantId} → ${apiTenantId}`);
+      
       const loginData: UserLoginData = {
         email,
         password,
         tenant_id: apiTenantId
       };
       
-      console.log('📋 Login data prepared:', {
+      console.log('📋 === DATOS PREPARADOS PARA LOGIN ===');
+      console.log('📋 LoginData estructura:', {
         email: loginData.email,
         tenant_id: loginData.tenant_id,
-        password: '[OCULTA]'
+        password: `[OCULTA - length: ${loginData.password?.length || 0}]`
       });
       
-      console.log('🚀 Attempting API login...');
+      // Validación previa
+      console.log('🔍 === VALIDACIÓN PREVIA ===');
+      if (!loginData.email || loginData.email.trim() === '') {
+        console.log('❌ Email vacío');
+        return { success: false, error: 'email-required' };
+      }
+      if (!loginData.password || loginData.password.trim() === '') {
+        console.log('❌ Password vacío');
+        return { success: false, error: 'password-required' };
+      }
+      if (!loginData.tenant_id || loginData.tenant_id.trim() === '') {
+        console.log('❌ Tenant ID vacío');
+        return { success: false, error: 'tenant-required' };
+      }
+      
+      console.log('✅ Validación previa pasada');
+      console.log('🚀 Llamando a userService.login...');
       
       // Intentar login con API real
       const apiResult = await userService.login(loginData);
+      console.log('📨 Resultado del userService:', apiResult);
       
       if (apiResult.success && apiResult.data) {
         console.log('✅ API login successful');
@@ -98,10 +118,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           token: apiResult.data.token
         };
         
-        console.log('💾 Saving user session:', {
-          ...userSession,
-          profile: { ...userSession.profile, password: '[OCULTA]' }
-        });
+        console.log('💾 Guardando sesión de usuario');
         
         setUser(userSession);
         localStorage.setItem('current_user', JSON.stringify(userSession));
@@ -110,28 +127,28 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         return { success: true };
       }
       
-      console.log('⚠️ API login failed, trying localStorage fallback');
-      console.log('❌ API Error:', apiResult.error);
+      console.log('⚠️ API login failed, usando localStorage fallback');
+      console.log('❌ Error de API:', apiResult.error);
       
       // Fallback a localStorage si API falla
       const usersDB = localStorage.getItem('users_db');
       const users: UserProfile[] = usersDB ? JSON.parse(usersDB) : [];
       
-      console.log('📁 LocalStorage users found:', users.length);
+      console.log('📁 Usuarios en localStorage:', users.length);
       
       const foundUser = users.find(u => u.email === email);
       
       if (!foundUser) {
-        console.log('❌ User not found in localStorage');
+        console.log('❌ Usuario no encontrado en localStorage');
         return { success: false, error: 'no-user' };
       }
       
       if (foundUser.password !== password) {
-        console.log('❌ Password mismatch in localStorage');
+        console.log('❌ Password incorrecto en localStorage');
         return { success: false, error: 'bad-pass' };
       }
       
-      console.log('✅ LocalStorage login successful');
+      console.log('✅ Login exitoso con localStorage');
       
       // Login exitoso con localStorage
       const userSession: User = {
@@ -148,36 +165,62 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     } catch (error) {
       console.error('💥 === ERROR EN LOGIN ===');
       console.error('💥 Error:', error);
-      console.error('💥 === FIN ERROR LOGIN ===');
+      console.error('💥 Stack:', error instanceof Error ? error.stack : 'No stack');
       return { success: false, error: 'unknown' };
     }
   };
 
   const register = async (userData: UserProfile): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log('📝 === INICIANDO PROCESO DE REGISTRO ===');
-      console.log('🏪 UserContext.register - Current tenant:', tenantId);
-      console.log('👤 UserContext.register - User data:', {
+      console.log('📝 === INICIANDO PROCESO DE REGISTRO EN USERCONTEXT ===');
+      console.log('🏪 Tenant actual:', tenantId);
+      console.log('👤 Datos del usuario:', {
         ...userData,
-        password: '[OCULTA]'
+        password: `[OCULTA - length: ${userData.password?.length || 0}]`
       });
       
       // Preparar datos para API con tenant_id
       const apiTenantId = getTenantId(tenantId);
+      console.log('🔄 Tenant mapeado:', `${tenantId} → ${apiTenantId}`);
+      
       const registrationData: UserRegistrationData = {
         ...userData,
         tenant_id: apiTenantId
       };
       
-      console.log('📋 Registration data prepared:', {
-        ...registrationData,
-        password: '[OCULTA]'
+      console.log('📋 === DATOS PREPARADOS PARA REGISTRO ===');
+      console.log('📋 RegistrationData estructura:', {
+        nombre: registrationData.nombre,
+        apellidos: registrationData.apellidos,
+        email: registrationData.email,
+        direccion: registrationData.direccion,
+        tenant_id: registrationData.tenant_id,
+        password: `[OCULTA - length: ${registrationData.password?.length || 0}]`
       });
       
-      console.log('🚀 Attempting API registration...');
+      // Validación previa
+      console.log('🔍 === VALIDACIÓN PREVIA ===');
+      const requiredFields = ['nombre', 'apellidos', 'email', 'direccion', 'password'];
+      for (const field of requiredFields) {
+        const value = (registrationData as any)[field];
+        if (!value || value.trim() === '') {
+          console.log(`❌ Campo requerido vacío: ${field}`);
+          return { success: false, error: `${field}-required` };
+        }
+        console.log(`✅ ${field}: OK`);
+      }
+      
+      if (!registrationData.tenant_id || registrationData.tenant_id.trim() === '') {
+        console.log('❌ Tenant ID vacío');
+        return { success: false, error: 'tenant-required' };
+      }
+      
+      console.log('✅ Validación previa completa');
+      console.log('🚀 Llamando a userService.register...');
       
       // Intentar registro con API real
       const apiResult = await userService.register(registrationData);
+      console.log('📨 Resultado del userService:', apiResult);
       
       if (apiResult.success) {
         console.log('✅ API registration successful');
@@ -190,7 +233,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           token: apiResult.data?.token
         };
         
-        console.log('💾 Saving user session after registration');
+        console.log('💾 Guardando sesión después del registro');
         
         setUser(userSession);
         localStorage.setItem('current_user', JSON.stringify(userSession));
@@ -199,23 +242,23 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         return { success: true };
       }
       
-      console.log('⚠️ API registration failed, trying localStorage fallback');
-      console.log('❌ API Error:', apiResult.error);
+      console.log('⚠️ API registration failed, usando localStorage fallback');
+      console.log('❌ Error de API:', apiResult.error);
       
       // Fallback a localStorage si API falla
       const usersDB = localStorage.getItem('users_db');
       const users: UserProfile[] = usersDB ? JSON.parse(usersDB) : [];
       
-      console.log('📁 LocalStorage users found:', users.length);
+      console.log('📁 Usuarios en localStorage:', users.length);
       
       // Verificar si el email ya existe en localStorage
       const existingUser = users.find(u => u.email === userData.email);
       if (existingUser) {
-        console.log('❌ Email already exists in localStorage');
+        console.log('❌ Email ya existe en localStorage');
         return { success: false, error: 'email-exists' };
       }
       
-      console.log('💾 Adding user to localStorage');
+      console.log('💾 Agregando usuario a localStorage');
       
       // Agregar nuevo usuario a localStorage
       users.push(userData);
@@ -236,13 +279,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     } catch (error) {
       console.error('💥 === ERROR EN REGISTRO ===');
       console.error('💥 Error:', error);
-      console.error('💥 === FIN ERROR REGISTRO ===');
+      console.error('💥 Stack:', error instanceof Error ? error.stack : 'No stack');
       return { success: false, error: 'unknown' };
     }
   };
 
   const logout = () => {
-    console.log('🚪 Logging out user');
+    console.log('🚪 Cerrando sesión de usuario');
     setUser(null);
     localStorage.removeItem('current_user');
   };

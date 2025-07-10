@@ -60,7 +60,40 @@ export class UserService {
       console.log('🚀 === INICIANDO PETICIÓN API ===');
       console.log(`📍 URL: ${url}`);
       console.log(`🔧 Método: ${method}`);
-      console.log(`📦 Payload:`, JSON.stringify(data, null, 2));
+      console.log('📦 === PAYLOAD ANÁLISIS DETALLADO ===');
+      
+      if (data) {
+        console.log('📋 Payload original:', data);
+        console.log('📋 Payload keys:', Object.keys(data));
+        console.log('📋 Payload values (sin password):');
+        Object.entries(data).forEach(([key, value]) => {
+          if (key === 'password') {
+            console.log(`   ${key}: [OCULTA - length: ${String(value).length}]`);
+          } else {
+            console.log(`   ${key}: "${value}" (tipo: ${typeof value})`);
+          }
+        });
+        
+        // Verificar campos específicos
+        console.log('🔍 === VALIDACIÓN DE CAMPOS ===');
+        const requiredFields = endpoint.includes('registro') 
+          ? ['nombre', 'apellidos', 'email', 'direccion', 'password', 'tenant_id']
+          : ['email', 'password', 'tenant_id'];
+          
+        console.log('📝 Campos requeridos:', requiredFields);
+        
+        requiredFields.forEach(field => {
+          const value = data[field];
+          const isPresent = value !== undefined && value !== null && value !== '';
+          console.log(`   ${field}: ${isPresent ? '✅' : '❌'} (valor: ${field === 'password' ? '[OCULTO]' : `"${value}"`})`);
+        });
+        
+        // JSON que se enviará
+        const jsonString = JSON.stringify(data);
+        console.log('📤 JSON exacto a enviar:', jsonString);
+        console.log('📏 Tamaño del JSON:', jsonString.length, 'bytes');
+      }
+      
       console.log(`⏰ Timestamp: ${new Date().toISOString()}`);
       
       const requestConfig = {
@@ -72,7 +105,7 @@ export class UserService {
         body: data ? JSON.stringify(data) : undefined,
       };
       
-      console.log('🔧 Request config:', JSON.stringify(requestConfig, null, 2));
+      console.log('🔧 Headers enviados:', requestConfig.headers);
       
       // Realizar la petición
       console.log('📡 Enviando petición...');
@@ -80,7 +113,7 @@ export class UserService {
       
       const duration = Date.now() - startTime;
       console.log(`⏱️ Duración: ${duration}ms`);
-      console.log(`📊 Status: ${response.status} ${response.statusText}`);
+      console.log(`📊 Status HTTP: ${response.status} ${response.statusText}`);
       console.log('📋 Response headers:', Object.fromEntries(response.headers.entries()));
       
       // Intentar parsear la respuesta
@@ -90,7 +123,13 @@ export class UserService {
       
       if (contentType?.includes('application/json')) {
         result = await response.json();
+        console.log('📥 === RESPUESTA COMPLETA DEL SERVIDOR ===');
         console.log('📥 Response body (JSON):', JSON.stringify(result, null, 2));
+        
+        if (result.error) {
+          console.log('❌ Error específico del servidor:', result.error);
+          console.log('❌ Mensaje completo:', result.message || 'Sin mensaje adicional');
+        }
       } else {
         const textResult = await response.text();
         console.log('📥 Response body (Text):', textResult);
@@ -98,9 +137,20 @@ export class UserService {
       }
 
       if (!response.ok) {
-        console.log('❌ Petición falló');
+        console.log('❌ === PETICIÓN FALLÓ ===');
         console.log(`❌ HTTP Error: ${response.status} - ${response.statusText}`);
         console.log('❌ Error details:', result);
+        
+        // Diagnóstico específico para error 400
+        if (response.status === 400) {
+          console.log('🔍 === DIAGNÓSTICO ERROR 400 ===');
+          console.log('🔍 Esto indica que el servidor recibió la petición pero hay un problema con los datos');
+          console.log('🔍 Campos que enviamos vs lo que puede esperar el servidor:');
+          if (data) {
+            console.log('🔍 Enviados:', Object.keys(data).join(', '));
+          }
+          console.log('🔍 Mensaje del servidor:', result?.error || result?.message);
+        }
         
         return {
           success: false,
@@ -122,15 +172,15 @@ export class UserService {
       console.error('💥 === ERROR EN PETICIÓN API ===');
       console.error('💥 Error type:', error?.constructor?.name);
       console.error('💥 Error message:', error instanceof Error ? error.message : String(error));
-      console.error('💥 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       
-      // Identificar tipo de error
+      // Diagnóstico de red
       if (error instanceof TypeError && error.message.includes('fetch')) {
         console.error('🌐 DIAGNÓSTICO: Error de red o CORS');
         console.error('🔍 Posibles causas:');
         console.error('   - Servidor no disponible');
         console.error('   - Error CORS');
         console.error('   - Conexión a internet perdida');
+        console.error('   - URL incorrecta');
       }
       
       console.error('💥 === FIN ERROR ===');
@@ -144,9 +194,10 @@ export class UserService {
 
   async register(userData: UserRegistrationData): Promise<ApiResponse> {
     console.log('🔐 === REGISTRO DE USUARIO ===');
-    console.log('👤 UserService.register called with:', {
+    console.log('👤 UserService.register called');
+    console.log('📋 Datos recibidos para registro:', {
       ...userData,
-      password: '[OCULTA]' // No mostrar password en logs
+      password: '[OCULTA]'
     });
     
     return this.makeRequest(API_CONFIG.USERS.ENDPOINTS.REGISTRO, 'POST', userData);
@@ -154,9 +205,10 @@ export class UserService {
 
   async login(loginData: UserLoginData): Promise<ApiResponse> {
     console.log('🔐 === LOGIN DE USUARIO ===');
-    console.log('👤 UserService.login called with:', {
+    console.log('👤 UserService.login called');
+    console.log('📋 Datos recibidos para login:', {
       ...loginData,
-      password: '[OCULTA]' // No mostrar password en logs
+      password: '[OCULTA]'
     });
     
     return this.makeRequest(API_CONFIG.USERS.ENDPOINTS.LOGIN, 'POST', loginData);
