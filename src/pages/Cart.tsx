@@ -236,7 +236,7 @@ const Cart = () => {
                     <span className="text-base text-gray-950">{formatPrice(total)}</span>
                   </div>
                   
-                  <Button onClick={handleCheckout} className="w-full bg-primary hover:bg-blue-700 text-white py-3">
+                  <Button onClick={handleCheckout} className="w-full bg-primary hover:bg-blue-700 py-3 text-green-400">
                     Pagar 💳
                   </Button>
                   
