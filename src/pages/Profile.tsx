@@ -116,7 +116,8 @@ const Profile = () => {
                       <div className="text-xs text-neutral-500">Rating</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-neutral-900">2</div>
+                      <div className="text-2xl font-bold text-neutral-900">
+                    </div>
                       <div className="text-xs text-neutral-500">Años</div>
                     </div>
                   </div>
