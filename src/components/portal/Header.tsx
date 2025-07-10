@@ -1,9 +1,6 @@
-
 import { Heart, UserCircle, ShoppingCart, Truck, Phone, Mail } from 'lucide-react';
-
 const Header = () => {
-  return (
-    <header className="header-professional">
+  return <header className="header-professional">
       {/* Pre-Header */}
       <div className="pre-header">
         <div className="container mx-auto px-4">
@@ -38,15 +35,9 @@ const Header = () => {
           </div>
 
           {/* Right Icons */}
-          <div className="flex items-center space-x-6">
-            <Heart className="w-6 h-6 icon-interactive cursor-pointer" />
-            <UserCircle className="w-6 h-6 icon-interactive cursor-pointer" />
-            <ShoppingCart className="w-6 h-6 icon-interactive cursor-pointer" />
-          </div>
+          
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
