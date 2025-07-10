@@ -233,7 +233,7 @@ const Cart = () => {
                   
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-primary">{formatPrice(total)}</span>
+                    <span className="text-base text-gray-950">{formatPrice(total)}</span>
                   </div>
                   
                   <Button onClick={handleCheckout} className="w-full bg-primary hover:bg-blue-700 text-white py-3">
