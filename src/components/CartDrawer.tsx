@@ -19,7 +19,7 @@ const CartDrawer = () => {
   const navigate = useNavigate();
 
   const cartProducts = items.map(item => {
-    const product = products.find(p => p.id === item.id);
+    const product = products.find(p => String(p.id) === item.id);
     return product ? { ...product, quantity: item.quantity } : null;
   }).filter(Boolean);
 
@@ -101,7 +101,7 @@ const CartDrawer = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => decrementItem(item.id)}
+                            onClick={() => decrementItem(String(item.id))}
                             className="w-8 h-8 p-0 btn-secondary-professional"
                           >
                             <Minus className="w-3 h-3" />
@@ -112,7 +112,7 @@ const CartDrawer = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => incrementItem(item.id)}
+                            onClick={() => incrementItem(String(item.id))}
                             className="w-8 h-8 p-0 btn-secondary-professional"
                           >
                             <Plus className="w-3 h-3" />
@@ -122,7 +122,7 @@ const CartDrawer = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeItem(String(item.id))}
                           className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2"
                         >
                           <Trash2 className="w-4 h-4" />

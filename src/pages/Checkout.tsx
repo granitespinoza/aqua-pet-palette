@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,7 +38,7 @@ const Checkout = () => {
   }, [items, navigate]);
 
   const cartProducts = items.map(item => {
-    const product = products.find(p => p.id === item.id);
+    const product = products.find(p => String(p.id) === item.id);
     return product ? { ...product, quantity: item.quantity } : null;
   }).filter(Boolean);
 

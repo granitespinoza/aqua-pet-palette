@@ -26,7 +26,7 @@ const Cart = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const cartProducts = items.map(item => {
-    const product = products.find(p => p.id === item.id);
+    const product = products.find(p => String(p.id) === item.id);
     return product ? { ...product, quantity: item.quantity } : null;
   }).filter(Boolean);
 
@@ -42,7 +42,7 @@ const Cart = () => {
   const shipping = subtotal >= 100 ? 0 : 10; // Envío gratis si subtotal >= S/ 100.00
   const total = subtotal + shipping;
 
-  const handleQuantityChange = (productId: number, newQuantity: string) => {
+  const handleQuantityChange = (productId: string, newQuantity: string) => {
     const qty = parseInt(newQuantity);
     if (qty >= 1) {
       const currentItem = items.find(item => item.id === productId);
@@ -146,7 +146,7 @@ const Cart = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => removeItem(String(item.id))}
                               className="text-red-500 hover:text-red-700"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -158,7 +158,7 @@ const Cart = () => {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => decrementItem(item.id)}
+                                onClick={() => decrementItem(String(item.id))}
                                 className="w-8 h-8 p-0"
                               >
                                 <Minus className="w-3 h-3" />
@@ -166,14 +166,14 @@ const Cart = () => {
                               <Input
                                 type="number"
                                 value={item.quantity}
-                                onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                onChange={(e) => handleQuantityChange(String(item.id), e.target.value)}
                                 className="w-16 text-center"
                                 min="1"
                               />
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => incrementItem(item.id)}
+                                onClick={() => incrementItem(String(item.id))}
                                 className="w-8 h-8 p-0"
                               >
                                 <Plus className="w-3 h-3" />
@@ -229,7 +229,7 @@ const Cart = () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => decrementItem(item.id)}
+                                    onClick={() => decrementItem(String(item.id))}
                                     className="w-8 h-8 p-0"
                                   >
                                     <Minus className="w-3 h-3" />
@@ -237,14 +237,14 @@ const Cart = () => {
                                   <Input
                                     type="number"
                                     value={item.quantity}
-                                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                    onChange={(e) => handleQuantityChange(String(item.id), e.target.value)}
                                     className="w-16 text-center"
                                     min="1"
                                   />
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={() => incrementItem(item.id)}
+                                    onClick={() => incrementItem(String(item.id))}
                                     className="w-8 h-8 p-0"
                                   >
                                     <Plus className="w-3 h-3" />
@@ -261,7 +261,7 @@ const Cart = () => {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => removeItem(item.id)}
+                                  onClick={() => removeItem(String(item.id))}
                                   className="text-red-500 hover:text-red-700"
                                 >
                                   <Trash2 className="w-4 h-4" />
