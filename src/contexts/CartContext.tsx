@@ -14,12 +14,15 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  addItem: (id: string | number, quantity?: number) => void;
+  removeItem: (id: string | number) => void;
+  updateQuantity: (id: string | number, quantity: number) => void;
+  incrementItem: (id: string | number) => void;
+  decrementItem: (id: string | number) => void;
   clearCart: () => void;
   total: number;
   itemCount: number;
+  getTotalItems: () => number;
   processOrder: (orderData: any) => void;
 }
 
@@ -58,41 +61,87 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     localStorage.setItem(`cart_${tenantId || 'default'}`, JSON.stringify(items));
   }, [items, tenantId]);
 
-  const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
-    setItems(currentItems => {
-      const existingItem = currentItems.find(item => item.id === newItem.id);
+  const addItem = (id: string | number, quantity: number = 1) => {
+    // Import products data to get product info
+    import('@/data/products.json').then((productsModule) => {
+      const products = productsModule.default;
+      const product = products.find(p => p.id === Number(id));
       
-      if (existingItem) {
-        return currentItems.map(item =>
-          item.id === newItem.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+      if (!product) {
+        console.error('Product not found:', id);
+        return;
       }
-      
-      return [...currentItems, { ...newItem, quantity: 1 }];
+
+      const itemId = String(id);
+      setItems(currentItems => {
+        const existingItem = currentItems.find(item => item.id === itemId);
+        
+        if (existingItem) {
+          return currentItems.map(item =>
+            item.id === itemId
+              ? { ...item, quantity: item.quantity + quantity }
+              : item
+          );
+        }
+        
+        const newItem: CartItem = {
+          id: itemId,
+          name: product.nombre,
+          price: product.precioOferta || product.precio,
+          image: product.img,
+          quantity: quantity
+        };
+        
+        return [...currentItems, newItem];
+      });
     });
   };
 
-  const removeItem = (id: string) => {
-    setItems(currentItems => currentItems.filter(item => item.id !== id));
+  const removeItem = (id: string | number) => {
+    const itemId = String(id);
+    setItems(currentItems => currentItems.filter(item => item.id !== itemId));
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = (id: string | number, quantity: number) => {
+    const itemId = String(id);
     if (quantity <= 0) {
-      removeItem(id);
+      removeItem(itemId);
       return;
     }
     
     setItems(currentItems =>
       currentItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
+        item.id === itemId ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const incrementItem = (id: string | number) => {
+    const itemId = String(id);
+    setItems(currentItems =>
+      currentItems.map(item =>
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const decrementItem = (id: string | number) => {
+    const itemId = String(id);
+    setItems(currentItems =>
+      currentItems.map(item =>
+        item.id === itemId 
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+          : item
       )
     );
   };
 
   const clearCart = () => {
     setItems([]);
+  };
+
+  const getTotalItems = () => {
+    return items.reduce((sum, item) => sum + item.quantity, 0);
   };
 
   const processOrder = (orderData: any) => {
@@ -135,9 +184,12 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       addItem,
       removeItem,
       updateQuantity,
+      incrementItem,
+      decrementItem,
       clearCart,
       total,
       itemCount,
+      getTotalItems,
       processOrder
     }}>
       {children}
