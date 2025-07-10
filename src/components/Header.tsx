@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ArrowLeft, User, Package, LogOut } from 'lucide-react';
@@ -14,10 +13,12 @@ import AuthButton from '@/components/AuthButton';
 import CartDrawer from '@/components/CartDrawer';
 import SearchBar from '@/components/SearchBar';
 import { useTenant } from '@/contexts/TenantContext';
+import { useUser } from '@/contexts/UserContext';
 
 const Header = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const { tenant, tenantId, setSelectedTenant } = useTenant();
+  const { logout } = useUser();
 
   // Get tenant-specific branding
   const getTenantBranding = () => {
@@ -62,6 +63,10 @@ const Header = () => {
   const handleBackToPortal = () => {
     console.log('Going back to portal...');
     setSelectedTenant(null);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -146,7 +151,7 @@ const Header = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white/20" />
-                <DropdownMenuItem className="text-gray-900">
+                <DropdownMenuItem onClick={handleLogout} className="text-gray-900 cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   Cerrar Sesión
                 </DropdownMenuItem>
