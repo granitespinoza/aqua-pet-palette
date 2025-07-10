@@ -1,20 +1,17 @@
-
 import { Link } from 'react-router-dom';
 import { useTenant } from '@/contexts/TenantContext';
 import { Heart, Star, MapPin, Clock, Phone, Mail } from 'lucide-react';
-
 const Footer = () => {
-  const { tenant } = useTenant();
-
+  const {
+    tenant
+  } = useTenant();
   if (!tenant) return null;
-
-  return (
-    <footer className="watercolor-footer border-t-4 border-pastel-blue/40 mt-20">
+  return <footer className="watercolor-footer border-t-4 border-pastel-blue/40 mt-20">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Enhanced Company Info */}
           <div className="space-y-6">
-            <div className="flex items-center space-x-4 group">
+            <div className="flex items-center space-x-4 group bg-red-300">
               <div className="w-16 h-16 bg-gradient-to-br from-pastel-cyan via-pastel-peach to-pastel-pink rounded-full flex items-center justify-center group-hover:scale-125 transition-transform duration-500 shadow-2xl animate-float border-4 border-white/50">
                 <span className="text-gray-900 font-extra-bold text-2xl pet-icon-interactive">{tenant.logo}</span>
               </div>
@@ -108,23 +105,7 @@ const Footer = () => {
             </div>
             
             {/* Newsletter Signup */}
-            <div className="glass-effect p-6 rounded-2xl border-2 border-pastel-green/30">
-              <h4 className="font-extra-bold text-gray-900 text-lg mb-4 enhanced-visibility">
-                <span className="pet-icon-interactive mr-2 text-xl">📧</span>
-                Newsletter
-              </h4>
-              <p className="text-gray-800 font-semibold mb-4">Recibe ofertas exclusivas</p>
-              <div className="flex space-x-2">
-                <input 
-                  type="email" 
-                  placeholder="tu@email.com" 
-                  className="flex-1 px-4 py-2 rounded-lg border-2 border-pastel-cyan/40 focus:border-pastel-peach text-gray-900 font-semibold"
-                />
-                <button className="pet-button-primary px-4 py-2 rounded-lg font-bold">
-                  <span className="pet-icon-interactive">📬</span>
-                </button>
-              </div>
-            </div>
+            
           </div>
         </div>
 
@@ -143,8 +124,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
