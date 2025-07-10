@@ -1,7 +1,5 @@
-
 const HeroBanner = () => {
-  return (
-    <section className="relative min-h-[70vh] overflow-hidden">
+  return <section className="relative min-h-[70vh] overflow-hidden">
       {/* Background with Professional Gradient */}
       <div className="absolute inset-0 hero-gradient"></div>
       
@@ -9,7 +7,7 @@ const HeroBanner = () => {
       <div className="absolute inset-0 bg-mesh-gradient"></div>
       
       {/* Professional Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30 py-[300px]"></div>
       
       {/* Floating Elements */}
       <div className="absolute top-20 left-12 text-white/20 animate-bounce-gentle">
@@ -17,12 +15,16 @@ const HeroBanner = () => {
           🌟
         </div>
       </div>
-      <div className="absolute top-32 right-20 text-white/20 animate-bounce-gentle" style={{animationDelay: '1s'}}>
+      <div className="absolute top-32 right-20 text-white/20 animate-bounce-gentle" style={{
+      animationDelay: '1s'
+    }}>
         <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
           🎾
         </div>
       </div>
-      <div className="absolute bottom-32 left-1/4 text-white/20 animate-bounce-gentle" style={{animationDelay: '2s'}}>
+      <div className="absolute bottom-32 left-1/4 text-white/20 animate-bounce-gentle" style={{
+      animationDelay: '2s'
+    }}>
         <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
           🐕
         </div>
@@ -93,11 +95,7 @@ const HeroBanner = () => {
             <div className="relative">
               {/* Main Image */}
               <div className="relative z-10">
-                <img
-                  src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=600&h=600&q=80"
-                  alt="Mascotas felices"
-                  className="w-96 h-96 object-cover rounded-3xl shadow-2xl border-4 border-white/20 backdrop-blur-sm"
-                />
+                <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=600&h=600&q=80" alt="Mascotas felices" className="w-96 h-96 object-cover rounded-3xl shadow-2xl border-4 border-white/20 backdrop-blur-sm" />
               </div>
               
               {/* Floating Cards */}
@@ -109,7 +107,9 @@ const HeroBanner = () => {
                 </div>
               </div>
               
-              <div className="absolute -bottom-8 -right-8 glass-card w-48 h-32 animate-bounce-gentle" style={{animationDelay: '1s'}}>
+              <div className="absolute -bottom-8 -right-8 glass-card w-48 h-32 animate-bounce-gentle" style={{
+              animationDelay: '1s'
+            }}>
                 <div className="text-center">
                   <div className="text-3xl mb-2">💖</div>
                   <div className="text-sm font-semibold text-neutral-700">Amor Garantizado</div>
@@ -130,8 +130,6 @@ const HeroBanner = () => {
           <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" fill="currentColor"></path>
         </svg>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroBanner;
