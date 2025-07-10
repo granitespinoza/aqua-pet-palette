@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Enhanced Company Info */}
           <div className="space-y-6">
-            <div className="flex items-center space-x-4 group bg-red-300">
+            <div className="flex items-center space-x-4 group bg-transparent">
               <div className="w-16 h-16 bg-gradient-to-br from-pastel-cyan via-pastel-peach to-pastel-pink rounded-full flex items-center justify-center group-hover:scale-125 transition-transform duration-500 shadow-2xl animate-float border-4 border-white/50">
                 <span className="text-gray-900 font-extra-bold text-2xl pet-icon-interactive">{tenant.logo}</span>
               </div>
