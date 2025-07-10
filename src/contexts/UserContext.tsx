@@ -58,7 +58,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log('UserContext.login - Current tenant:', tenantId);
+      console.log('🔑 === INICIANDO PROCESO DE LOGIN ===');
+      console.log('🏪 UserContext.login - Current tenant:', tenantId);
+      console.log('👤 UserContext.login - Email:', email);
       
       // Preparar datos para API con tenant_id
       const apiTenantId = getTenantId(tenantId);
@@ -68,13 +70,20 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         tenant_id: apiTenantId
       };
       
-      console.log('Attempting API login with data:', loginData);
+      console.log('📋 Login data prepared:', {
+        email: loginData.email,
+        tenant_id: loginData.tenant_id,
+        password: '[OCULTA]'
+      });
+      
+      console.log('🚀 Attempting API login...');
       
       // Intentar login con API real
       const apiResult = await userService.login(loginData);
       
       if (apiResult.success && apiResult.data) {
-        console.log('API login successful');
+        console.log('✅ API login successful');
+        console.log('📊 API Response data:', apiResult.data);
         
         // Login exitoso con API
         const userSession: User = {
@@ -89,27 +98,40 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           token: apiResult.data.token
         };
         
+        console.log('💾 Saving user session:', {
+          ...userSession,
+          profile: { ...userSession.profile, password: '[OCULTA]' }
+        });
+        
         setUser(userSession);
         localStorage.setItem('current_user', JSON.stringify(userSession));
         
+        console.log('✅ === LOGIN EXITOSO ===');
         return { success: true };
       }
       
-      console.log('API login failed, trying localStorage fallback');
+      console.log('⚠️ API login failed, trying localStorage fallback');
+      console.log('❌ API Error:', apiResult.error);
       
       // Fallback a localStorage si API falla
       const usersDB = localStorage.getItem('users_db');
       const users: UserProfile[] = usersDB ? JSON.parse(usersDB) : [];
       
+      console.log('📁 LocalStorage users found:', users.length);
+      
       const foundUser = users.find(u => u.email === email);
       
       if (!foundUser) {
+        console.log('❌ User not found in localStorage');
         return { success: false, error: 'no-user' };
       }
       
       if (foundUser.password !== password) {
+        console.log('❌ Password mismatch in localStorage');
         return { success: false, error: 'bad-pass' };
       }
+      
+      console.log('✅ LocalStorage login successful');
       
       // Login exitoso con localStorage
       const userSession: User = {
@@ -120,18 +142,25 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       setUser(userSession);
       localStorage.setItem('current_user', JSON.stringify(userSession));
       
+      console.log('✅ === LOGIN EXITOSO (LOCALSTORAGE) ===');
       return { success: true };
       
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('💥 === ERROR EN LOGIN ===');
+      console.error('💥 Error:', error);
+      console.error('💥 === FIN ERROR LOGIN ===');
       return { success: false, error: 'unknown' };
     }
   };
 
   const register = async (userData: UserProfile): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log('UserContext.register - Current tenant:', tenantId);
-      console.log('UserContext.register - User data:', userData);
+      console.log('📝 === INICIANDO PROCESO DE REGISTRO ===');
+      console.log('🏪 UserContext.register - Current tenant:', tenantId);
+      console.log('👤 UserContext.register - User data:', {
+        ...userData,
+        password: '[OCULTA]'
+      });
       
       // Preparar datos para API con tenant_id
       const apiTenantId = getTenantId(tenantId);
@@ -140,13 +169,19 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         tenant_id: apiTenantId
       };
       
-      console.log('Attempting API registration with data:', registrationData);
+      console.log('📋 Registration data prepared:', {
+        ...registrationData,
+        password: '[OCULTA]'
+      });
+      
+      console.log('🚀 Attempting API registration...');
       
       // Intentar registro con API real
       const apiResult = await userService.register(registrationData);
       
       if (apiResult.success) {
-        console.log('API registration successful');
+        console.log('✅ API registration successful');
+        console.log('📊 API Response:', apiResult.data);
         
         // Registro exitoso con API, iniciar sesión automáticamente
         const userSession: User = {
@@ -155,23 +190,32 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           token: apiResult.data?.token
         };
         
+        console.log('💾 Saving user session after registration');
+        
         setUser(userSession);
         localStorage.setItem('current_user', JSON.stringify(userSession));
         
+        console.log('✅ === REGISTRO EXITOSO ===');
         return { success: true };
       }
       
-      console.log('API registration failed, trying localStorage fallback');
+      console.log('⚠️ API registration failed, trying localStorage fallback');
+      console.log('❌ API Error:', apiResult.error);
       
       // Fallback a localStorage si API falla
       const usersDB = localStorage.getItem('users_db');
       const users: UserProfile[] = usersDB ? JSON.parse(usersDB) : [];
       
+      console.log('📁 LocalStorage users found:', users.length);
+      
       // Verificar si el email ya existe en localStorage
       const existingUser = users.find(u => u.email === userData.email);
       if (existingUser) {
+        console.log('❌ Email already exists in localStorage');
         return { success: false, error: 'email-exists' };
       }
+      
+      console.log('💾 Adding user to localStorage');
       
       // Agregar nuevo usuario a localStorage
       users.push(userData);
@@ -186,15 +230,19 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       setUser(userSession);
       localStorage.setItem('current_user', JSON.stringify(userSession));
       
+      console.log('✅ === REGISTRO EXITOSO (LOCALSTORAGE) ===');
       return { success: true };
       
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error('💥 === ERROR EN REGISTRO ===');
+      console.error('💥 Error:', error);
+      console.error('💥 === FIN ERROR REGISTRO ===');
       return { success: false, error: 'unknown' };
     }
   };
 
   const logout = () => {
+    console.log('🚪 Logging out user');
     setUser(null);
     localStorage.removeItem('current_user');
   };
