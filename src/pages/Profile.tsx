@@ -1,18 +1,18 @@
-
 import { useUser } from '@/contexts/UserContext';
 import { useTenant } from '@/contexts/TenantContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Mail, MapPin, ArrowLeft, Edit, Shield, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
 const Profile = () => {
-  const { user } = useUser();
-  const { tenantId } = useTenant();
-
+  const {
+    user
+  } = useUser();
+  const {
+    tenantId
+  } = useTenant();
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-white flex items-center justify-center">
+    return <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-white flex items-center justify-center">
         <div className="text-center space-y-6">
           <div className="w-24 h-24 bg-gradient-to-br from-primary to-catshop-500 rounded-3xl flex items-center justify-center mx-auto shadow-large">
             <User className="w-12 h-12 text-white" />
@@ -30,43 +30,38 @@ const Profile = () => {
             </Button>
           </Link>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   const getTenantBranding = () => {
     switch (tenantId) {
       case 'dogshop':
-        return { 
-          bgClass: 'bg-gradient-to-br from-dogshop-50 to-dogshop-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-dogshop-50 to-dogshop-100',
           accentColor: 'text-dogshop-600',
           gradientClass: 'from-dogshop-500 to-dogshop-600'
         };
       case 'catshop':
-        return { 
-          bgClass: 'bg-gradient-to-br from-catshop-50 to-catshop-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-catshop-50 to-catshop-100',
           accentColor: 'text-catshop-600',
           gradientClass: 'from-catshop-500 to-catshop-600'
         };
       case 'vetshop':
-        return { 
-          bgClass: 'bg-gradient-to-br from-vetshop-50 to-vetshop-100', 
+        return {
+          bgClass: 'bg-gradient-to-br from-vetshop-50 to-vetshop-100',
           accentColor: 'text-vetshop-600',
           gradientClass: 'from-vetshop-500 to-vetshop-600'
         };
       default:
-        return { 
-          bgClass: 'bg-gradient-to-br from-neutral-50 to-white', 
+        return {
+          bgClass: 'bg-gradient-to-br from-neutral-50 to-white',
           accentColor: 'text-primary',
           gradientClass: 'from-primary to-primary/80'
         };
     }
   };
-
   const branding = getTenantBranding();
-
-  return (
-    <div className={`min-h-screen ${branding.bgClass} relative overflow-hidden`}>
+  return <div className={`min-h-screen ${branding.bgClass} relative overflow-hidden`}>
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-mesh-gradient opacity-30"></div>
       
@@ -87,10 +82,7 @@ const Profile = () => {
               </div>
             </div>
             
-            <Button className={`bg-gradient-to-r ${branding.gradientClass} text-white shadow-medium hover:shadow-large`}>
-              <Edit className="w-4 h-4 mr-2" />
-              Editar Perfil
-            </Button>
+            
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -111,7 +103,7 @@ const Profile = () => {
                     <h3 className="text-2xl font-bold text-neutral-900">
                       {user.profile.nombre} {user.profile.apellidos}
                     </h3>
-                    <p className="text-neutral-600">Cliente Premium</p>
+                    <p className="text-neutral-600">Cliente Rimac</p>
                   </div>
                   
                   <div className="flex items-center justify-center space-x-4 py-4 border-t border-neutral-100">
@@ -220,8 +212,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Profile;
