@@ -41,14 +41,25 @@ const Orders = () => {
   const getOrders = (): Order[] => {
     try {
       const orders = localStorage.getItem('user_orders');
-      return orders ? JSON.parse(orders) : [];
-    } catch {
+      const parsedOrders = orders ? JSON.parse(orders) : [];
+      console.log('Orders from localStorage:', parsedOrders);
+      return parsedOrders;
+    } catch (error) {
+      console.error('Error loading orders:', error);
       return [];
     }
   };
 
   const allOrders = getOrders();
-  const userOrders = allOrders.filter(order => order.tenantId);
+  console.log('All orders:', allOrders);
+  console.log('Current tenantId:', tenantId);
+
+  // Filtrar pedidos por tenantId si estamos en una tienda específica
+  const userOrders = tenantId 
+    ? allOrders.filter(order => order.tenantId === tenantId)
+    : allOrders;
+
+  console.log('Filtered orders for current tenant:', userOrders);
 
   const getTenantInfo = (tenant: string) => {
     switch (tenant) {
@@ -65,11 +76,81 @@ const Orders = () => {
 
   const currentTenantInfo = getTenantInfo(tenantId || '');
 
-  // Agrupar pedidos por tenant
+  // Si estamos en una tienda específica, mostrar solo pedidos de esa tienda
+  if (tenantId) {
+    return (
+      <div className={`min-h-screen ${currentTenantInfo.bgColor}`}>
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-8">
+              <Link to="/">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Volver
+                </Button>
+              </Link>
+              <h1 className="text-3xl font-bold text-gray-900">Mis Pedidos - {currentTenantInfo.name}</h1>
+            </div>
+
+            {/* Orders for current tenant */}
+            <Card className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-3 ${currentTenantInfo.textColor}`}>
+                  <span className="text-2xl">{currentTenantInfo.emoji}</span>
+                  <Package className="h-6 w-6" />
+                  Pedidos en {currentTenantInfo.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {userOrders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">No has realizado pedidos en {currentTenantInfo.name} aún</p>
+                    <Link to="/catalogo" className="mt-4 inline-block">
+                      <Button>Explorar Productos</Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {userOrders.map((order) => (
+                      <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/50">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <p className="text-sm text-gray-600">Pedido #{order.id.slice(-8)}</p>
+                            <p className="text-sm text-gray-500">{order.date}</p>
+                          </div>
+                          <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {order.items.map((item, index) => (
+                            <div key={index} className="flex justify-between items-center">
+                              <div>
+                                <p className="font-medium">{item.name}</p>
+                                <p className="text-sm text-gray-600">Cantidad: {item.quantity}</p>
+                              </div>
+                              <p className="font-semibold">S/ {(item.price * item.quantity).toFixed(2)}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Vista del portal: Agrupar pedidos por tenant
   const ordersByTenant = {
-    dogshop: userOrders.filter(order => order.tenantId === 'dogshop'),
-    catshop: userOrders.filter(order => order.tenantId === 'catshop'),
-    vetshop: userOrders.filter(order => order.tenantId === 'vetshop')
+    dogshop: allOrders.filter(order => order.tenantId === 'dogshop'),
+    catshop: allOrders.filter(order => order.tenantId === 'catshop'),
+    vetshop: allOrders.filter(order => order.tenantId === 'vetshop')
   };
 
   return (
@@ -140,7 +221,7 @@ const Orders = () => {
             })}
           </div>
 
-          {userOrders.length === 0 && (
+          {allOrders.length === 0 && (
             <Card className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
               <CardContent className="text-center py-12">
                 <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />

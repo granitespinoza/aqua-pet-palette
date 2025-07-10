@@ -145,7 +145,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   };
 
   const processOrder = (orderData: any) => {
-    // Crear el pedido con tenantId
+    // Crear el pedido con la estructura correcta y consistente
     const order = {
       id: Date.now().toString(),
       tenantId: tenantId || 'default',
@@ -163,7 +163,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     // Guardar en localStorage
     try {
       const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
-      const updatedOrders = [...existingOrders, order];
+      const updatedOrders = [order, ...existingOrders];
       localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
       
       // Limpiar carrito después de procesar pedido

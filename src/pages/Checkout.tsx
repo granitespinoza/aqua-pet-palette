@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCart } from '@/contexts/CartContext';
 import { useUser } from '@/contexts/UserContext';
+import { useTenant } from '@/contexts/TenantContext';
 import { formatPrice } from '@/lib/formatPrice';
 import { toast } from 'sonner';
 import { Download } from 'lucide-react';
@@ -16,6 +17,7 @@ import jsPDF from 'jspdf';
 const Checkout = () => {
   const { items, clearCart, getTotalItems } = useCart();
   const { user, getUserProfile } = useUser();
+  const { tenantId } = useTenant();
   const navigate = useNavigate();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [direccion, setDireccion] = useState('');
@@ -160,25 +162,37 @@ const Checkout = () => {
   };
 
   const handlePayment = () => {
-    // Simular proceso de pago
+    // Crear el pedido con la estructura correcta
     const orderData = {
-      id: Date.now(),
-      items: cartProducts,
-      subtotal,
-      shipping,
+      id: Date.now().toString(),
+      tenantId: tenantId || 'default',
+      items: cartProducts.map(item => ({
+        id: item!.id.toString(),
+        name: item!.nombre,
+        price: item!.precioOferta || item!.precio,
+        quantity: item!.quantity
+      })),
       total,
-      direccion,
-      fecha: new Date().toISOString(),
-      estado: 'pendiente'
+      date: new Date().toLocaleDateString('es-ES')
     };
 
-    const orders = JSON.parse(localStorage.getItem('user_orders') || '[]');
-    orders.unshift(orderData);
-    localStorage.setItem('user_orders', JSON.stringify(orders));
+    console.log('Saving order:', orderData);
 
-    clearCart();
-    toast.success('¡Pedido realizado exitosamente! Te contactaremos pronto.');
-    navigate('/');
+    // Guardar en localStorage
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+      const updatedOrders = [orderData, ...existingOrders];
+      localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
+      
+      console.log('Order saved successfully. Total orders:', updatedOrders.length);
+      
+      clearCart();
+      toast.success('¡Pedido realizado exitosamente! Te contactaremos pronto.');
+      navigate('/pedidos');
+    } catch (error) {
+      console.error('Error saving order:', error);
+      toast.error('Error al guardar el pedido. Por favor, inténtalo de nuevo.');
+    }
   };
 
   if (!user) {
