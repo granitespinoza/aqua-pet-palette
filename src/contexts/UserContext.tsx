@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { userService, UserRegistrationData } from '@/services/userService';
 
 interface UserProfile {
   nombre: string;
@@ -12,6 +13,7 @@ interface UserProfile {
 interface User {
   email: string;
   profile: UserProfile;
+  token?: string;
 }
 
 interface UserContextType {
@@ -53,11 +55,39 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      // Obtener base de datos de usuarios
+      console.log('Attempting API login for:', email);
+      
+      // Intentar login con API real
+      const apiResult = await userService.login({ email, password });
+      
+      if (apiResult.success && apiResult.data) {
+        console.log('API login successful');
+        
+        // Login exitoso con API
+        const userSession: User = {
+          email: email,
+          profile: {
+            nombre: apiResult.data.nombre || email.split('@')[0],
+            apellidos: apiResult.data.apellidos || '',
+            email: email,
+            direccion: apiResult.data.direccion || '',
+            password: password
+          },
+          token: apiResult.data.token
+        };
+        
+        setUser(userSession);
+        localStorage.setItem('current_user', JSON.stringify(userSession));
+        
+        return { success: true };
+      }
+      
+      console.log('API login failed, trying localStorage fallback');
+      
+      // Fallback a localStorage si API falla
       const usersDB = localStorage.getItem('users_db');
       const users: UserProfile[] = usersDB ? JSON.parse(usersDB) : [];
       
-      // Buscar usuario por email
       const foundUser = users.find(u => u.email === email);
       
       if (!foundUser) {
@@ -68,7 +98,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         return { success: false, error: 'bad-pass' };
       }
       
-      // Login exitoso
+      // Login exitoso con localStorage
       const userSession: User = {
         email: foundUser.email,
         profile: foundUser
@@ -78,6 +108,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       localStorage.setItem('current_user', JSON.stringify(userSession));
       
       return { success: true };
+      
     } catch (error) {
       console.error('Error during login:', error);
       return { success: false, error: 'unknown' };
@@ -86,17 +117,40 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const register = async (userData: UserProfile): Promise<{ success: boolean; error?: string }> => {
     try {
-      // Obtener base de datos de usuarios
+      console.log('Attempting API registration for:', userData.email);
+      
+      // Intentar registro con API real
+      const apiResult = await userService.register(userData as UserRegistrationData);
+      
+      if (apiResult.success) {
+        console.log('API registration successful');
+        
+        // Registro exitoso con API, iniciar sesión automáticamente
+        const userSession: User = {
+          email: userData.email,
+          profile: userData,
+          token: apiResult.data?.token
+        };
+        
+        setUser(userSession);
+        localStorage.setItem('current_user', JSON.stringify(userSession));
+        
+        return { success: true };
+      }
+      
+      console.log('API registration failed, trying localStorage fallback');
+      
+      // Fallback a localStorage si API falla
       const usersDB = localStorage.getItem('users_db');
       const users: UserProfile[] = usersDB ? JSON.parse(usersDB) : [];
       
-      // Verificar si el email ya existe
+      // Verificar si el email ya existe en localStorage
       const existingUser = users.find(u => u.email === userData.email);
       if (existingUser) {
         return { success: false, error: 'email-exists' };
       }
       
-      // Agregar nuevo usuario
+      // Agregar nuevo usuario a localStorage
       users.push(userData);
       localStorage.setItem('users_db', JSON.stringify(users));
       
@@ -110,6 +164,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       localStorage.setItem('current_user', JSON.stringify(userSession));
       
       return { success: true };
+      
     } catch (error) {
       console.error('Error during registration:', error);
       return { success: false, error: 'unknown' };
