@@ -117,7 +117,7 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              <Button onClick={handleAddToCart} className="w-full bg-primary hover:bg-blue-700 text-white py-3" size="lg">
+              <Button onClick={handleAddToCart} size="lg" className="w-full bg-primary hover:bg-blue-700 py-3 text-green-400">
                 Agregar al carrito
               </Button>
             </div>
