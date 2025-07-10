@@ -29,7 +29,7 @@ const AddToCartModal = ({
   const incrementQuantity = () => setQuantity(prev => prev + 1);
   const decrementQuantity = () => setQuantity(prev => Math.max(1, prev - 1));
   return <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="modal-glass max-w-md border-gray-200 shadow-2xl bg-gray-400">
+      <DialogContent className="modal-glass max-w-md border-gray-200 shadow-2xl bg-slate-400">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold text-gray-900">
             Añadir al carrito
