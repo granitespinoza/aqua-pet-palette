@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { userService, UserRegistrationData } from '@/services/userService';
+import { userService, UserRegistrationData, UserLoginData, getTenantId } from '@/services/userService';
+import { useTenant } from '@/contexts/TenantContext';
 
 interface UserProfile {
   nombre: string;
@@ -53,12 +54,24 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     return null;
   });
 
+  const { tenantId } = useTenant();
+
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log('Attempting API login for:', email);
+      console.log('UserContext.login - Current tenant:', tenantId);
+      
+      // Preparar datos para API con tenant_id
+      const apiTenantId = getTenantId(tenantId);
+      const loginData: UserLoginData = {
+        email,
+        password,
+        tenant_id: apiTenantId
+      };
+      
+      console.log('Attempting API login with data:', loginData);
       
       // Intentar login con API real
-      const apiResult = await userService.login({ email, password });
+      const apiResult = await userService.login(loginData);
       
       if (apiResult.success && apiResult.data) {
         console.log('API login successful');
@@ -117,10 +130,20 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const register = async (userData: UserProfile): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log('Attempting API registration for:', userData.email);
+      console.log('UserContext.register - Current tenant:', tenantId);
+      console.log('UserContext.register - User data:', userData);
+      
+      // Preparar datos para API con tenant_id
+      const apiTenantId = getTenantId(tenantId);
+      const registrationData: UserRegistrationData = {
+        ...userData,
+        tenant_id: apiTenantId
+      };
+      
+      console.log('Attempting API registration with data:', registrationData);
       
       // Intentar registro con API real
-      const apiResult = await userService.register(userData as UserRegistrationData);
+      const apiResult = await userService.register(registrationData);
       
       if (apiResult.success) {
         console.log('API registration successful');
