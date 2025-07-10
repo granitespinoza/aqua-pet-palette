@@ -1,4 +1,14 @@
 const HeroBanner = () => {
+  const handleExplorarTiendas = () => {
+    const tiendasSection = document.getElementById('tiendas');
+    if (tiendasSection) {
+      tiendasSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return <section className="relative min-h-[70vh] overflow-hidden">
       {/* Background with Professional Gradient */}
       <div className="absolute inset-0 hero-gradient"></div>
@@ -64,7 +74,10 @@ const HeroBanner = () => {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button className="btn-primary bg-white text-neutral-900 hover:bg-white/90 px-8 py-4 text-lg font-semibold rounded-xl shadow-large">
+              <button 
+                onClick={handleExplorarTiendas}
+                className="btn-primary bg-white text-neutral-900 hover:bg-white/90 px-8 py-4 text-lg font-semibold rounded-xl shadow-large cursor-pointer transition-transform hover:scale-105"
+              >
                 Explorar Tiendas
                 <span className="ml-2">→</span>
               </button>
