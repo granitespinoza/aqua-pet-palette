@@ -60,7 +60,7 @@ const AddToCartModal = ({
               <span className="w-16 text-center font-bold text-xl text-gray-900 bg-white px-4 py-2 rounded-lg border border-gray-200">
                 {quantity}
               </span>
-              <Button variant="outline" size="sm" onClick={incrementQuantity} className="w-10 h-10 rounded-full border-gray-300 hover:bg-gray-100 hover:border-gray-400">
+              <Button variant="outline" size="sm" onClick={incrementQuantity} className="w-10 h-10 rounded-full border-gray-300 hover:bg-gray-100 hover:border-gray-400 text-lime-500">
                 <Plus className="w-4 h-4 text-gray-600" />
               </Button>
             </div>

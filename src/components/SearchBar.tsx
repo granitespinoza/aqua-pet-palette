@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -7,7 +6,6 @@ import { useSearchSuggestions } from '@/hooks/useSearchSuggestions';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '@/lib/formatPrice';
 import AddToCartModal from './AddToCartModal';
-
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -16,8 +14,10 @@ const SearchBar = () => {
   const [showModal, setShowModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const { suggestions, isLoading } = useSearchSuggestions(query);
-
+  const {
+    suggestions,
+    isLoading
+  } = useSearchSuggestions(query);
   useEffect(() => {
     if (query.length >= 2 && suggestions.length > 0) {
       setShowSuggestions(true);
@@ -26,7 +26,6 @@ const SearchBar = () => {
     }
     setSelectedIndex(-1);
   }, [suggestions, query]);
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showSuggestions || suggestions.length === 0) {
       if (e.key === 'Enter' && query.trim()) {
@@ -37,13 +36,10 @@ const SearchBar = () => {
       }
       return;
     }
-
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : prev
-        );
+        setSelectedIndex(prev => prev < suggestions.length - 1 ? prev + 1 : prev);
         break;
       case 'ArrowUp':
         e.preventDefault();
@@ -67,7 +63,6 @@ const SearchBar = () => {
         break;
     }
   };
-
   const handleSuggestionSelect = (product: any) => {
     console.log('Product selected from suggestions:', product);
     setSelectedProduct(product);
@@ -75,12 +70,10 @@ const SearchBar = () => {
     setShowSuggestions(false);
     setQuery('');
   };
-
   const handleBlur = () => {
     // Delay hiding suggestions to allow clicks
     setTimeout(() => setShowSuggestions(false), 200);
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -90,81 +83,39 @@ const SearchBar = () => {
       inputRef.current?.blur();
     }
   };
-
-  return (
-    <>
+  return <>
       <div className="relative w-full max-w-md">
         <form onSubmit={handleSubmit} className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            ref={inputRef}
-            placeholder="Busca productos, marcas..."
-            className="pl-10 bg-white/90 border-white/50 focus:border-primary text-gray-900"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onFocus={() => query.length >= 2 && setShowSuggestions(true)}
-            onBlur={handleBlur}
-          />
+          <Input ref={inputRef} placeholder="Busca productos, marcas..." value={query} onChange={e => setQuery(e.target.value)} onKeyDown={handleKeyDown} onFocus={() => query.length >= 2 && setShowSuggestions(true)} onBlur={handleBlur} className="pl-10 border-white/50 focus:border-primary text-gray-900 bg-green-300" />
         </form>
 
-        {showSuggestions && (
-          <Card className="absolute top-full left-0 right-0 mt-1 z-50 max-h-80 overflow-y-auto bg-white/95 backdrop-blur-md border border-white/50">
+        {showSuggestions && <Card className="absolute top-full left-0 right-0 mt-1 z-50 max-h-80 overflow-y-auto bg-white/95 backdrop-blur-md border border-white/50">
             <CardContent className="p-0">
               <ul role="listbox" className="py-2">
-                {isLoading ? (
-                  <li className="px-4 py-2 text-gray-600 text-sm">
+                {isLoading ? <li className="px-4 py-2 text-gray-600 text-sm">
                     Buscando...
-                  </li>
-                ) : suggestions.length > 0 ? (
-                  suggestions.map((product, index) => (
-                    <li
-                      key={product.id}
-                      className={`px-4 py-3 cursor-pointer hover:bg-gray-100 border-b border-gray-100 last:border-b-0 ${
-                        selectedIndex === index ? 'bg-blue-50' : ''
-                      }`}
-                      onClick={() => handleSuggestionSelect(product)}
-                      role="option"
-                      aria-selected={selectedIndex === index}
-                    >
+                  </li> : suggestions.length > 0 ? suggestions.map((product, index) => <li key={product.id} className={`px-4 py-3 cursor-pointer hover:bg-gray-100 border-b border-gray-100 last:border-b-0 ${selectedIndex === index ? 'bg-blue-50' : ''}`} onClick={() => handleSuggestionSelect(product)} role="option" aria-selected={selectedIndex === index}>
                       <div className="flex items-center space-x-3">
-                        <img
-                          src={product.img}
-                          alt={product.nombre}
-                          className="w-12 h-12 object-cover rounded"
-                        />
+                        <img src={product.img} alt={product.nombre} className="w-12 h-12 object-cover rounded" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {product.nombre}
                           </p>
                           <p className="text-sm text-primary font-semibold">
-                            {product.precioOferta 
-                              ? formatPrice(product.precioOferta)
-                              : formatPrice(product.precio)
-                            }
+                            {product.precioOferta ? formatPrice(product.precioOferta) : formatPrice(product.precio)}
                           </p>
                         </div>
                       </div>
-                    </li>
-                  ))
-                ) : (
-                  <li className="px-4 py-2 text-gray-600 text-sm">
+                    </li>) : <li className="px-4 py-2 text-gray-600 text-sm">
                     Sin coincidencias
-                  </li>
-                )}
+                  </li>}
               </ul>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
       </div>
 
-      <AddToCartModal
-        product={selectedProduct}
-        open={showModal}
-        onOpenChange={setShowModal}
-      />
-    </>
-  );
+      <AddToCartModal product={selectedProduct} open={showModal} onOpenChange={setShowModal} />
+    </>;
 };
-
 export default SearchBar;
