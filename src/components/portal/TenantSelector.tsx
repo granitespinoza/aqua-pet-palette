@@ -58,16 +58,7 @@ const TenantSelector = () => {
         
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center space-x-4 glass-effect rounded-2xl p-6">
-            <div className="text-2xl">🎯</div>
-            <div className="text-left">
-              <div className="font-semibold text-neutral-900">¿No sabes por dónde empezar?</div>
-              <div className="text-sm text-neutral-600">Te ayudamos a encontrar lo que necesitas</div>
-            </div>
-            <button className="btn-primary ml-4">
-              Obtener Ayuda
-            </button>
-          </div>
+          
         </div>
       </div>
     </section>;

@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { useTenant } from '@/contexts/TenantContext';
 import { ArrowRight, Star, Shield, Truck } from 'lucide-react';
-
 interface TenantCardProps {
   tenantName: string;
   tenantId: string;
@@ -11,7 +9,6 @@ interface TenantCardProps {
   buttonText: string;
   features?: string[];
 }
-
 const TenantCard: React.FC<TenantCardProps> = ({
   tenantName,
   tenantId,
@@ -20,13 +17,13 @@ const TenantCard: React.FC<TenantCardProps> = ({
   buttonText,
   features = []
 }) => {
-  const { setSelectedTenant } = useTenant();
-
+  const {
+    setSelectedTenant
+  } = useTenant();
   const handleClick = () => {
     console.log('TenantCard clicked:', tenantId);
     setSelectedTenant(tenantId);
   };
-
   const getTenantTheme = () => {
     switch (tenantId) {
       case 'dogshop':
@@ -55,19 +52,12 @@ const TenantCard: React.FC<TenantCardProps> = ({
         };
     }
   };
-
   const theme = getTenantTheme();
-
-  return (
-    <div className="group cursor-pointer" onClick={handleClick}>
+  return <div className="group cursor-pointer" onClick={handleClick}>
       <div className="card-professional h-[500px] overflow-hidden bg-white hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500">
         {/* Image Section */}
         <div className="relative h-64 overflow-hidden">
-          <img 
-            src={backgroundImageUrl} 
-            alt={tenantName} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-          />
+          <img src={backgroundImageUrl} alt={tenantName} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
           
           {/* Gradient Overlay */}
           <div className={`absolute inset-0 bg-gradient-to-t ${theme.gradient} opacity-80`}></div>
@@ -96,25 +86,21 @@ const TenantCard: React.FC<TenantCardProps> = ({
         </div>
         
         {/* Content Section */}
-        <div className="p-6 space-y-4 flex-1 flex flex-col">
+        <div className="p-6 space-y-4 flex-1 flex flex-col py-0 px-0">
           <p className="text-neutral-600 leading-relaxed flex-1">
             {description}
           </p>
           
           {/* Features */}
-          {features.length > 0 && (
-            <div className="grid grid-cols-2 gap-2">
-              {features.slice(0, 4).map((feature, index) => (
-                <div key={index} className="flex items-center space-x-2 text-sm text-neutral-500">
+          {features.length > 0 && <div className="grid grid-cols-2 gap-2">
+              {features.slice(0, 4).map((feature, index) => <div key={index} className="flex items-center space-x-2 text-sm text-neutral-500">
                   <div className={`w-1.5 h-1.5 bg-${theme.color} rounded-full`}></div>
                   <span>{feature}</span>
-                </div>
-              ))}
-            </div>
-          )}
+                </div>)}
+            </div>}
           
           {/* Stats */}
-          <div className="flex items-center justify-between py-3 border-t border-neutral-100">
+          <div className="flex items-center justify-between border-t border-neutral-100 py-0">
             <div className="flex items-center space-x-4 text-sm text-neutral-500">
               <div className="flex items-center space-x-1">
                 <Shield className="w-4 h-4" />
@@ -134,8 +120,6 @@ const TenantCard: React.FC<TenantCardProps> = ({
           </button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default TenantCard;

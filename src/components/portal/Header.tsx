@@ -1,12 +1,8 @@
-
 import { Heart, UserCircle, ShoppingCart, Truck, Phone, Mail, Menu, X } from 'lucide-react';
 import { useState } from 'react';
-
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  return (
-    <header className="header-professional">
+  return <header className="header-professional">
       {/* Pre-Header */}
       <div className="bg-neutral-900 text-neutral-200">
         <div className="container-professional">
@@ -61,32 +57,11 @@ const Header = () => {
             </nav>
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-4">
-              <button className="hidden md:flex items-center space-x-2 text-neutral-600 hover:text-primary transition-colors">
-                <Heart className="w-5 h-5" />
-              </button>
-              
-              <button className="hidden md:flex items-center space-x-2 text-neutral-600 hover:text-primary transition-colors">
-                <UserCircle className="w-5 h-5" />
-              </button>
-              
-              <button className="hidden md:flex items-center space-x-2 text-neutral-600 hover:text-primary transition-colors">
-                <ShoppingCart className="w-5 h-5" />
-              </button>
-
-              {/* Mobile Menu Button */}
-              <button 
-                className="md:hidden p-2 text-neutral-600 hover:text-primary transition-colors"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
+            
           </div>
 
           {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-border/20 py-4 animate-slide-up">
+          {isMobileMenuOpen && <div className="md:hidden border-t border-border/20 py-4 animate-slide-up">
               <nav className="flex flex-col space-y-4">
                 <a href="#tiendas" className="text-neutral-600 hover:text-primary transition-colors py-2">
                   Nuestras Tiendas
@@ -108,12 +83,9 @@ const Header = () => {
                   </button>
                 </div>
               </nav>
-            </div>
-          )}
+            </div>}
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
