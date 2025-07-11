@@ -26,6 +26,40 @@ export interface ProductSearchParams {
 class ProductService {
   private baseUrl = API_CONFIG.PRODUCTS.BASE_URL;
 
+  private getAuthToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  private async makeRequest(url: string, options: RequestInit = {}): Promise<Response> {
+    const token = this.getAuthToken();
+    
+    const defaultHeaders: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    // Incluir token si está disponible
+    if (token) {
+      defaultHeaders['Authorization'] = `Bearer ${token}`;
+    }
+
+    const config: RequestInit = {
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...options.headers,
+      },
+    };
+
+    console.log('🛍️ ProductService - Request:', {
+      url,
+      method: config.method || 'GET',
+      hasToken: !!token,
+      headers: config.headers
+    });
+
+    return fetch(url, config);
+  }
+
   // Listar productos con filtros
   async listarProductos(params: ProductSearchParams = {}): Promise<ApiProduct[]> {
     try {
@@ -45,12 +79,7 @@ class ProductService {
       const fullUrl = queryParams.toString() ? `${url}?${queryParams.toString()}` : url;
       console.log('📡 ProductService - URL completa:', fullUrl);
 
-      const response = await fetch(fullUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await this.makeRequest(fullUrl);
 
       console.log('📊 ProductService - Response status:', response.status);
 
@@ -110,12 +139,7 @@ class ProductService {
       params.append('busqueda', query);
       if (tenantId) params.append('tenant_id', tenantId);
 
-      const response = await fetch(`${url}?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await this.makeRequest(`${url}?${params.toString()}`);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));

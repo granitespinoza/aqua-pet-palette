@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { userService, UserRegistrationData, UserLoginData, getTenantId } from '@/services/userService';
 import { useTenant } from '@/contexts/TenantContext';
+import { purchaseService } from '@/services/purchaseService';
 
 interface UserProfile {
   nombre: string;
@@ -55,6 +56,21 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   });
 
   const { tenantId } = useTenant();
+
+  // Limpiar órdenes globales obsoletas al cargar
+  useEffect(() => {
+    purchaseService.cleanupGlobalOrders();
+  }, []);
+
+  const saveUserSession = (userSession: User) => {
+    setUser(userSession);
+    localStorage.setItem('current_user', JSON.stringify(userSession));
+    
+    // Guardar token por separado para fácil acceso
+    if (userSession.token) {
+      localStorage.setItem('authToken', userSession.token);
+    }
+  };
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
@@ -119,9 +135,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         };
         
         console.log('💾 Guardando sesión de usuario');
-        
-        setUser(userSession);
-        localStorage.setItem('current_user', JSON.stringify(userSession));
+        saveUserSession(userSession);
         
         console.log('✅ === LOGIN EXITOSO ===');
         return { success: true };
@@ -156,8 +170,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         profile: foundUser
       };
       
-      setUser(userSession);
-      localStorage.setItem('current_user', JSON.stringify(userSession));
+      saveUserSession(userSession);
       
       console.log('✅ === LOGIN EXITOSO (LOCALSTORAGE) ===');
       return { success: true };
@@ -234,9 +247,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         };
         
         console.log('💾 Guardando sesión después del registro');
-        
-        setUser(userSession);
-        localStorage.setItem('current_user', JSON.stringify(userSession));
+        saveUserSession(userSession);
         
         console.log('✅ === REGISTRO EXITOSO ===');
         return { success: true };
@@ -270,8 +281,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         profile: userData
       };
       
-      setUser(userSession);
-      localStorage.setItem('current_user', JSON.stringify(userSession));
+      saveUserSession(userSession);
       
       console.log('✅ === REGISTRO EXITOSO (LOCALSTORAGE) ===');
       return { success: true };
@@ -288,6 +298,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     console.log('🚪 Cerrando sesión de usuario');
     setUser(null);
     localStorage.removeItem('current_user');
+    localStorage.removeItem('authToken');
   };
 
   const getUserProfile = () => {

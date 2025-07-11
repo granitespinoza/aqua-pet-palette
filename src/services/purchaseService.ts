@@ -36,6 +36,10 @@ class PurchaseService {
     return localStorage.getItem('authToken');
   }
 
+  private getUserOrdersKey(usuario: string): string {
+    return `user_orders_${usuario}`;
+  }
+
   private async makeRequest<T>(url: string, options: RequestInit = {}): Promise<T> {
     const token = this.getAuthToken();
     
@@ -59,6 +63,7 @@ class PurchaseService {
       url,
       method: config.method || 'GET',
       headers: config.headers,
+      hasToken: !!token,
       body: config.body
     });
 
@@ -98,18 +103,19 @@ class PurchaseService {
     } catch (error) {
       console.error('Error al registrar compra:', error);
       
-      // Fallback: guardar en localStorage como backup
+      // Fallback: guardar en localStorage específico del usuario
       const backupOrder: CompraResponse = {
         ...compraData,
         id: Date.now().toString(),
         estado: 'pending_api'
       };
       
-      const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+      const userOrdersKey = this.getUserOrdersKey(compraData.usuario);
+      const existingOrders = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
       const updatedOrders = [backupOrder, ...existingOrders];
-      localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
+      localStorage.setItem(userOrdersKey, JSON.stringify(updatedOrders));
       
-      console.log('Orden guardada como backup en localStorage');
+      console.log(`Orden guardada como backup en localStorage para usuario: ${compraData.usuario}`);
       throw error;
     }
   }
@@ -129,21 +135,37 @@ class PurchaseService {
     } catch (error) {
       console.error('Error al listar compras:', error);
       
-      // Fallback: usar datos de localStorage
-      const backupOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
-      console.log('Usando órdenes de backup desde localStorage:', backupOrders.length);
+      // Fallback: usar datos específicos del usuario desde localStorage
+      if (!usuario) {
+        console.warn('No se puede usar fallback sin especificar usuario');
+        return [];
+      }
+
+      const userOrdersKey = this.getUserOrdersKey(usuario);
+      const backupOrders = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
+      console.log(`Usando órdenes de backup desde localStorage para usuario ${usuario}:`, backupOrders.length);
       
       // Convertir formato de localStorage al formato de API
       return backupOrders.map((order: any) => ({
         id: order.id,
-        usuario: usuario || 'usuario_actual',
-        productos: order.items || [],
+        usuario: usuario,
+        productos: order.productos || order.items || [],
         total: order.total,
-        fecha: order.date,
-        direccion: 'Dirección no disponible',
+        fecha: order.fecha || order.date,
+        direccion: order.direccion || 'Dirección no disponible',
         tenantId: order.tenantId || 'default',
-        estado: 'completed'
+        estado: order.estado || 'completed'
       }));
+    }
+  }
+
+  // Método para limpiar órdenes globales obsoletas
+  cleanupGlobalOrders(): void {
+    console.log('🧹 Limpiando órdenes globales obsoletas...');
+    const globalOrders = localStorage.getItem('user_orders');
+    if (globalOrders) {
+      console.log('🗑️ Removiendo user_orders global obsoleto');
+      localStorage.removeItem('user_orders');
     }
   }
 }

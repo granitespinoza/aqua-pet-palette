@@ -1,5 +1,7 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useTenant } from './TenantContext';
+import { useUser } from './UserContext';
 
 export interface CartItem {
   id: string;
@@ -42,6 +44,7 @@ interface CartProviderProps {
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const { tenantId } = useTenant();
+  const { user } = useUser();
 
   // Load cart items from localStorage on mount
   useEffect(() => {
@@ -163,31 +166,40 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   };
 
   const processOrder = (orderData: any) => {
-    // Crear el pedido con la estructura correcta y consistente
+    if (!user?.profile?.email) {
+      console.error('Cannot process order: No user email available');
+      return;
+    }
+
+    // Crear el pedido con la estructura correcta y específica del usuario
     const order = {
       id: Date.now().toString(),
+      usuario: user.profile.email,
       tenantId: tenantId || 'default',
-      items: items.map(item => ({
+      productos: items.map(item => ({
         id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
+        nombre: item.name,
+        precio: item.price,
+        cantidad: item.quantity
       })),
       total: total,
-      date: new Date().toLocaleDateString('es-ES'),
+      fecha: new Date().toISOString(),
+      direccion: orderData.direccion || 'Sin dirección',
+      estado: 'completed',
       ...orderData
     };
 
-    // Guardar en localStorage
+    // Guardar en localStorage específico del usuario
     try {
-      const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+      const userOrdersKey = `user_orders_${user.profile.email}`;
+      const existingOrders = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
       const updatedOrders = [order, ...existingOrders];
-      localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
+      localStorage.setItem(userOrdersKey, JSON.stringify(updatedOrders));
       
       // Limpiar carrito después de procesar pedido
       clearCart();
       
-      console.log('Order processed successfully:', order);
+      console.log('Order processed successfully for user:', user.profile.email, order);
     } catch (error) {
       console.error('Error processing order:', error);
     }
