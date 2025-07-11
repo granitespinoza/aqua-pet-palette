@@ -1,4 +1,3 @@
-
 import { useSearchParams } from 'react-router-dom';
 import { useApiProducts, useProductSearch } from '@/hooks/useApiProducts';
 import ApiProductCard from '@/components/ApiProductCard';
@@ -77,6 +76,10 @@ const Catalogo = () => {
     setLocalSearch('');
   };
 
+  const handleRefresh = () => {
+    refetch();
+  };
+
   const getTenantName = () => {
     switch (tenantId) {
       case 'dogshop': return 'DogShop';
@@ -153,7 +156,7 @@ const Catalogo = () => {
               </Button>
               {error && (
                 <Button 
-                  onClick={refetch}
+                  onClick={handleRefresh}
                   variant="outline"
                   className="px-4"
                 >
@@ -219,7 +222,7 @@ const Catalogo = () => {
               <p className="text-gray-700 font-medium text-lg mb-4">
                 {error}
               </p>
-              <Button onClick={refetch} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={handleRefresh} className="bg-blue-600 hover:bg-blue-700">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Reintentar
               </Button>
