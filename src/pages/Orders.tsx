@@ -3,15 +3,29 @@ import { useUser } from '@/contexts/UserContext';
 import { useTenant } from '@/contexts/TenantContext';
 import { useOrders } from '@/hooks/useOrders';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, ArrowLeft, ShoppingBag, RefreshCw, Loader2 } from 'lucide-react';
+import { Package, ArrowLeft, ShoppingBag, RefreshCw, Loader2, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { formatPrice } from '@/lib/formatPrice';
+import OrderConfirmation from '@/components/OrderConfirmation';
+import { useEffect } from 'react';
 
 const Orders = () => {
   const { user } = useUser();
   const { tenantId } = useTenant();
   const { orders, allOrders, ordersByTenant, isLoading, error, refreshOrders } = useOrders();
+  const location = useLocation();
+  
+  // Mostrar confirmación si viene de checkout
+  const newOrder = location.state?.newOrder;
+
+  useEffect(() => {
+    if (newOrder) {
+      // Limpiar el state después de mostrar la confirmación
+      window.history.replaceState({}, document.title);
+    }
+  }, [newOrder]);
 
   if (!user) {
     return (
@@ -51,12 +65,73 @@ const Orders = () => {
     }
   };
 
+  const renderOrderCard = (order: any) => (
+    <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/70 hover:bg-white/90 transition-colors">
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+            <Package className="h-5 w-5 text-gray-600" />
+          </div>
+          <div>
+            <p className="font-semibold">Pedido #{order.id.slice(-8)}</p>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Calendar className="h-3 w-3" />
+              <span>{new Date(order.fecha).toLocaleDateString('es-ES')}</span>
+            </div>
+            {order.direccion && (
+              <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                <MapPin className="h-3 w-3" />
+                <span className="truncate max-w-48">{order.direccion}</span>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="font-bold text-lg text-green-600">{formatPrice(order.total)}</p>
+          <span className={`text-xs px-2 py-1 rounded-full ${
+            order.estado === 'completed' ? 'bg-green-100 text-green-700' : 
+            order.estado === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+            'bg-gray-100 text-gray-700'
+          }`}>
+            {order.estado === 'completed' ? 'Completado' : 
+             order.estado === 'pending' ? 'Pendiente' : order.estado}
+          </span>
+        </div>
+      </div>
+      
+      <div className="space-y-1">
+        <p className="text-sm font-medium text-gray-700">
+          {order.productos.length} producto{order.productos.length !== 1 ? 's' : ''}:
+        </p>
+        {order.productos.slice(0, 3).map((item: any, index: number) => (
+          <div key={index} className="text-sm text-gray-600 flex justify-between">
+            <span className="truncate">{item.nombre}</span>
+            <span>×{item.cantidad}</span>
+          </div>
+        ))}
+        {order.productos.length > 3 && (
+          <p className="text-xs text-gray-500">
+            +{order.productos.length - 3} producto{order.productos.length - 3 !== 1 ? 's' : ''} más
+          </p>
+        )}
+      </div>
+    </div>
+  );
+
   // Si estamos en una tienda específica, mostrar solo pedidos de esa tienda
   if (tenantId) {
     return (
       <div className={`min-h-screen ${currentTenantInfo.bgColor}`}>
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
+            
+            {/* Mostrar confirmación de pedido nuevo */}
+            {newOrder && (
+              <div className="mb-8">
+                <OrderConfirmation order={newOrder} />
+              </div>
+            )}
+
             {/* Header */}
             <div className="flex items-center gap-4 mb-8">
               <Link to="/">
@@ -65,7 +140,9 @@ const Orders = () => {
                   Volver
                 </Button>
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900">Mis Pedidos - {currentTenantInfo.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Mis Pedidos - {currentTenantInfo.name}
+              </h1>
               <Button 
                 onClick={handleRefresh} 
                 variant="outline" 
@@ -113,39 +190,7 @@ const Orders = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {orders.map((order) => (
-                      <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/50">
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <p className="text-sm text-gray-600">Pedido #{order.id.slice(-8)}</p>
-                            <p className="text-sm text-gray-500">{new Date(order.fecha).toLocaleDateString('es-ES')}</p>
-                            <p className="text-xs text-gray-400">{order.direccion}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
-                            <span className={`text-xs px-2 py-1 rounded ${
-                              order.estado === 'completed' ? 'bg-green-100 text-green-700' : 
-                              order.estado === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                              'bg-gray-100 text-gray-700'
-                            }`}>
-                              {order.estado}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          {order.productos.map((item, index) => (
-                            <div key={index} className="flex justify-between items-center">
-                              <div>
-                                <p className="font-medium">{item.nombre}</p>
-                                <p className="text-sm text-gray-600">Cantidad: {item.cantidad}</p>
-                              </div>
-                              <p className="font-semibold">S/ {(item.precio * item.cantidad).toFixed(2)}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
+                    {orders.map(renderOrderCard)}
                   </div>
                 )}
               </CardContent>
@@ -161,6 +206,14 @@ const Orders = () => {
     <div className={`min-h-screen ${currentTenantInfo.bgColor}`}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
+          
+          {/* Mostrar confirmación de pedido nuevo */}
+          {newOrder && (
+            <div className="mb-8">
+              <OrderConfirmation order={newOrder} />
+            </div>
+          )}
+
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <Link to="/">
@@ -226,39 +279,7 @@ const Orders = () => {
                           </div>
                         ) : (
                           <div className="space-y-4">
-                            {tenantOrders.map((order) => (
-                              <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/50">
-                                <div className="flex justify-between items-start mb-3">
-                                  <div>
-                                    <p className="text-sm text-gray-600">Pedido #{order.id.slice(-8)}</p>
-                                    <p className="text-sm text-gray-500">{new Date(order.fecha).toLocaleDateString('es-ES')}</p>
-                                    <p className="text-xs text-gray-400">{order.direccion}</p>
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
-                                    <span className={`text-xs px-2 py-1 rounded ${
-                                      order.estado === 'completed' ? 'bg-green-100 text-green-700' : 
-                                      order.estado === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                      'bg-gray-100 text-gray-700'
-                                    }`}>
-                                      {order.estado}
-                                    </span>
-                                  </div>
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  {order.productos.map((item, index) => (
-                                    <div key={index} className="flex justify-between items-center">
-                                      <div>
-                                        <p className="font-medium">{item.nombre}</p>
-                                        <p className="text-sm text-gray-600">Cantidad: {item.cantidad}</p>
-                                      </div>
-                                      <p className="font-semibold">S/ {(item.precio * item.cantidad).toFixed(2)}</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
+                            {tenantOrders.map(renderOrderCard)}
                           </div>
                         )}
                       </CardContent>

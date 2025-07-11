@@ -10,6 +10,13 @@ export const useOrders = () => {
   const { tenantId } = useTenant();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Limpiar datos obsoletos una vez cuando se carga el hook
+  useEffect(() => {
+    if (user?.profile?.email) {
+      purchaseService.cleanupGlobalOrders();
+    }
+  }, [user?.profile?.email]);
+
   const {
     data: orders = [],
     isLoading,

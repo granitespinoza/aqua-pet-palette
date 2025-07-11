@@ -173,11 +173,11 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
-      // Preparar datos de la compra para la API
+      // Preparar datos consistentes para la compra
       const compraData = {
         usuario: user.profile.email,
         productos: cartProducts.map(item => ({
-          id: item!.id.toString(),
+          id: String(item!.id),
           nombre: item!.nombre,
           precio: item!.precioOferta || item!.precio,
           cantidad: item!.quantity
@@ -190,7 +190,7 @@ const Checkout = () => {
 
       console.log('Procesando pago con datos:', compraData);
 
-      // Enviar a la API de compras
+      // Intentar enviar a la API
       const response = await purchaseService.registrarCompra(compraData);
       
       console.log('Compra registrada exitosamente:', response);
@@ -198,33 +198,61 @@ const Checkout = () => {
       // Limpiar carrito
       clearCart();
       
+      // Navegar a pedidos con mensaje de éxito
       toast.success('¡Pedido realizado exitosamente! Te contactaremos pronto.');
-      navigate('/pedidos');
+      navigate('/pedidos', { 
+        state: { 
+          newOrder: {
+            id: response.id,
+            total: total,
+            productos: compraData.productos,
+            fecha: compraData.fecha,
+            tenantId: compraData.tenantId
+          }
+        }
+      });
 
     } catch (error) {
       console.error('Error al procesar el pago:', error);
       
-      // Si falla la API, crear orden local como backup
+      // Si falla la API, usar sistema de backup consistente
       const backupOrder = {
         id: Date.now().toString(),
+        usuario: user.profile.email,
         tenantId: tenantId || 'default',
-        items: cartProducts.map(item => ({
-          id: item!.id.toString(),
-          name: item!.nombre,
-          price: item!.precioOferta || item!.precio,
-          quantity: item!.quantity
+        productos: cartProducts.map(item => ({
+          id: String(item!.id),
+          nombre: item!.nombre,
+          precio: item!.precioOferta || item!.precio,
+          cantidad: item!.quantity
         })),
         total,
-        date: new Date().toLocaleDateString('es-ES')
+        fecha: new Date().toISOString(),
+        direccion: direccion.trim(),
+        estado: 'completed'
       };
 
-      const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+      // Usar el nuevo sistema específico por usuario
+      const userOrdersKey = `user_orders_${user.profile.email}`;
+      const existingOrders = JSON.parse(localStorage.getItem(userOrdersKey) || '[]');
       const updatedOrders = [backupOrder, ...existingOrders];
-      localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
+      localStorage.setItem(userOrdersKey, JSON.stringify(updatedOrders));
 
+      // Limpiar carrito
       clearCart();
+      
       toast.success('¡Pedido procesado! Te contactaremos pronto.');
-      navigate('/pedidos');
+      navigate('/pedidos', { 
+        state: { 
+          newOrder: {
+            id: backupOrder.id,
+            total: backupOrder.total,
+            productos: backupOrder.productos,
+            fecha: backupOrder.fecha,
+            tenantId: backupOrder.tenantId
+          }
+        }
+      });
     } finally {
       setIsProcessing(false);
     }
