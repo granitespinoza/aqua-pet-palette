@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { productService, type ApiProduct, type ProductSearchParams } from '@/services/productService';
 import { useTenant } from '@/contexts/TenantContext';
+import { getApiInfo } from '@/config/apiConfig';
 
 export const useApiProducts = (params: ProductSearchParams = {}) => {
   const [products, setProducts] = useState<ApiProduct[]>([]);
@@ -21,12 +22,15 @@ export const useApiProducts = (params: ProductSearchParams = {}) => {
         tenant_id: tenantId || undefined
       };
 
+      // Log de configuración actual
+      const apiInfo = getApiInfo();
+      console.log('🔄 useApiProducts - Configuración API:', apiInfo);
       console.log('🔄 useApiProducts - Cargando productos con parámetros:', finalParams);
       
       const result = await productService.listarProductos(finalParams);
       setProducts(result);
       
-      console.log('✅ useApiProducts - Productos cargados:', result.length);
+      console.log('✅ useApiProducts - Productos cargados exitosamente:', result.length);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar productos';
       setError(errorMessage);
