@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useTenant } from './TenantContext';
 
@@ -61,11 +60,26 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     localStorage.setItem(`cart_${tenantId || 'default'}`, JSON.stringify(items));
   }, [items, tenantId]);
 
-  const addItem = (id: string | number, quantity: number = 1) => {
-    // Import products data to get product info
-    import('@/data/products.json').then((productsModule) => {
-      const products = productsModule.default;
-      const product = products.find(p => p.id === Number(id));
+  const addItem = async (id: string | number, quantity: number = 1) => {
+    try {
+      // Primero intentar obtener desde la API
+      const { productService } = await import('@/services/productService');
+      let product = await productService.obtenerProducto(Number(id));
+      
+      // Si no se encuentra en la API, usar datos estáticos como fallback
+      if (!product) {
+        const productsModule = await import('@/data/products.json');
+        const staticProduct = productsModule.default.find(p => p.id === Number(id));
+        if (staticProduct) {
+          product = {
+            ...staticProduct,
+            marca_id: staticProduct.marcaId,
+            categoria_id: staticProduct.categoriaId,
+            precio_oferta: staticProduct.precioOferta,
+            is_featured: staticProduct.is_featured
+          };
+        }
+      }
       
       if (!product) {
         console.error('Product not found:', id);
@@ -87,14 +101,18 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         const newItem: CartItem = {
           id: itemId,
           name: product.nombre,
-          price: product.precioOferta || product.precio,
+          price: product.precio_oferta || product.precio,
           image: product.img,
           quantity: quantity
         };
         
         return [...currentItems, newItem];
       });
-    });
+
+      console.log('✅ CartContext - Producto añadido al carrito:', product.nombre);
+    } catch (error) {
+      console.error('💥 CartContext - Error al añadir producto:', error);
+    }
   };
 
   const removeItem = (id: string | number) => {
