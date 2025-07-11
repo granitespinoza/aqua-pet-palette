@@ -9,26 +9,21 @@ import { useUser } from '@/contexts/UserContext';
 import { useTenant } from '@/contexts/TenantContext';
 import { formatPrice } from '@/lib/formatPrice';
 import { toast } from 'sonner';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import products from '@/data/products.json';
 import AuthModal from '@/components/AuthModal';
 import jsPDF from 'jspdf';
+import { purchaseService } from '@/services/purchaseService';
+
 const Checkout = () => {
-  const {
-    items,
-    clearCart,
-    getTotalItems
-  } = useCart();
-  const {
-    user,
-    getUserProfile
-  } = useUser();
-  const {
-    tenantId
-  } = useTenant();
+  const { items, clearCart, getTotalItems } = useCart();
+  const { user, getUserProfile } = useUser();
+  const { tenantId } = useTenant();
   const navigate = useNavigate();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [direccion, setDireccion] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
   useEffect(() => {
     if (!user) {
       setAuthModalOpen(true);
@@ -39,30 +34,33 @@ const Checkout = () => {
       }
     }
   }, [user, getUserProfile]);
+
   useEffect(() => {
     if (items.length === 0) {
       navigate('/cart');
     }
   }, [items, navigate]);
+
   const cartProducts = items.map(item => {
     const product = products.find(p => String(p.id) === item.id);
-    return product ? {
-      ...product,
-      quantity: item.quantity
-    } : null;
+    return product ? { ...product, quantity: item.quantity } : null;
   }).filter(Boolean);
+
   const subtotal = cartProducts.reduce((total, item) => {
     if (!item) return total;
     const price = item.precioOferta || item.precio;
     return total + price * item.quantity;
   }, 0);
+
   const totalDescuentos = cartProducts.reduce((total, item) => {
     if (!item || !item.precioOferta) return total;
     const descuento = (item.precio - item.precioOferta) * item.quantity;
     return total + descuento;
   }, 0);
+
   const shipping = subtotal >= 100 ? 0 : 10;
   const total = subtotal + shipping;
+
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -160,42 +158,93 @@ const Checkout = () => {
     doc.save(`boleta-go-pet-${Date.now()}.pdf`);
     toast.success('Boleta descargada exitosamente');
   };
-  const handlePayment = () => {
-    // Crear el pedido con la estructura correcta
-    const orderData = {
-      id: Date.now().toString(),
-      tenantId: tenantId || 'default',
-      items: cartProducts.map(item => ({
-        id: item!.id.toString(),
-        name: item!.nombre,
-        price: item!.precioOferta || item!.precio,
-        quantity: item!.quantity
-      })),
-      total,
-      date: new Date().toLocaleDateString('es-ES')
-    };
-    console.log('Saving order:', orderData);
 
-    // Guardar en localStorage
+  const handlePayment = async () => {
+    if (!user?.profile) {
+      toast.error('Usuario no autenticado');
+      return;
+    }
+
+    if (!direccion.trim()) {
+      toast.error('Por favor ingresa una dirección de envío');
+      return;
+    }
+
+    setIsProcessing(true);
+
     try {
-      const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
-      const updatedOrders = [orderData, ...existingOrders];
-      localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
-      console.log('Order saved successfully. Total orders:', updatedOrders.length);
+      // Preparar datos de la compra para la API
+      const compraData = {
+        usuario: user.profile.email,
+        productos: cartProducts.map(item => ({
+          id: item!.id.toString(),
+          nombre: item!.nombre,
+          precio: item!.precioOferta || item!.precio,
+          cantidad: item!.quantity
+        })),
+        total,
+        fecha: new Date().toISOString(),
+        direccion: direccion.trim(),
+        tenantId: tenantId || 'default'
+      };
+
+      console.log('Procesando pago con datos:', compraData);
+
+      // Enviar a la API de compras
+      const response = await purchaseService.registrarCompra(compraData);
+      
+      console.log('Compra registrada exitosamente:', response);
+
+      // Limpiar carrito
       clearCart();
+      
       toast.success('¡Pedido realizado exitosamente! Te contactaremos pronto.');
       navigate('/pedidos');
+
     } catch (error) {
-      console.error('Error saving order:', error);
-      toast.error('Error al guardar el pedido. Por favor, inténtalo de nuevo.');
+      console.error('Error al procesar el pago:', error);
+      
+      // Si falla la API, crear orden local como backup
+      const backupOrder = {
+        id: Date.now().toString(),
+        tenantId: tenantId || 'default',
+        items: cartProducts.map(item => ({
+          id: item!.id.toString(),
+          name: item!.nombre,
+          price: item!.precioOferta || item!.precio,
+          quantity: item!.quantity
+        })),
+        total,
+        date: new Date().toLocaleDateString('es-ES')
+      };
+
+      const existingOrders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+      const updatedOrders = [backupOrder, ...existingOrders];
+      localStorage.setItem('user_orders', JSON.stringify(updatedOrders));
+
+      clearCart();
+      toast.success('¡Pedido procesado! Te contactaremos pronto.');
+      navigate('/pedidos');
+    } finally {
+      setIsProcessing(false);
     }
   };
+
   if (!user) {
-    return <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
-        <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} nextRoute="/checkout" message="Inicia sesión para finalizar tu compra" />
-      </div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
+        <AuthModal 
+          open={authModalOpen} 
+          onOpenChange={setAuthModalOpen}
+          nextRoute="/checkout"
+          message="Inicia sesión para finalizar tu compra"
+        />
+      </div>
+    );
   }
-  return <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-white to-yellow-50/30">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -211,7 +260,14 @@ const Checkout = () => {
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="direccion">Dirección completa *</Label>
-                  <Input id="direccion" value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej: Av. Arequipa 123, San Isidro, Lima" className="mt-1" />
+                  <Input
+                    id="direccion"
+                    value={direccion}
+                    onChange={(e) => setDireccion(e.target.value)}
+                    placeholder="Ej: Av. Arequipa 123, San Isidro, Lima"
+                    className="mt-1"
+                    disabled={isProcessing}
+                  />
                 </div>
 
                 {/* QR Demo */}
@@ -234,11 +290,16 @@ const Checkout = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  {cartProducts.map(item => {
-                  if (!item) return null;
-                  const price = item.precioOferta || item.precio;
-                  return <div key={item.id} className="flex items-center space-x-3">
-                        <img src={item.img} alt={item.nombre} className="w-12 h-12 object-cover rounded" />
+                  {cartProducts.map((item) => {
+                    if (!item) return null;
+                    const price = item.precioOferta || item.precio;
+                    return (
+                      <div key={item.id} className="flex items-center space-x-3">
+                        <img
+                          src={item.img}
+                          alt={item.nombre}
+                          className="w-12 h-12 object-cover rounded"
+                        />
                         <div className="flex-1">
                           <h4 className="text-sm font-medium line-clamp-1">
                             {item.nombre}
@@ -250,8 +311,9 @@ const Checkout = () => {
                         <span className="text-sm font-medium">
                           {formatPrice(price * item.quantity)}
                         </span>
-                      </div>;
-                })}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <hr />
@@ -262,10 +324,12 @@ const Checkout = () => {
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   
-                  {totalDescuentos > 0 && <div className="flex justify-between text-sm text-green-600">
+                  {totalDescuentos > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
                       <span>Descuentos aplicados</span>
                       <span>-{formatPrice(totalDescuentos)}</span>
-                    </div>}
+                    </div>
+                  )}
                   
                   <div className="flex justify-between text-sm">
                     <span>Envío</span>
@@ -282,16 +346,37 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                <Button onClick={generatePDF} variant="outline" className="w-full mb-2">
+                <Button 
+                  onClick={generatePDF} 
+                  variant="outline" 
+                  className="w-full mb-2"
+                  disabled={isProcessing}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Descargar Boleta (PDF)
                 </Button>
 
-                <Button onClick={handlePayment} disabled={!direccion.trim()} className="w-full bg-primary hover:bg-blue-700 py-3 text-green-500">
-                  He pagado - Confirmar pedido
+                <Button 
+                  onClick={handlePayment} 
+                  disabled={!direccion.trim() || isProcessing} 
+                  className="w-full bg-primary hover:bg-blue-700 py-3"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : (
+                    'He pagado - Confirmar pedido'
+                  )}
                 </Button>
                 
-                <Button variant="outline" className="w-full" onClick={() => navigate('/cart')}>
+                <Button 
+                  variant="outline" 
+                  className="w-full" 
+                  onClick={() => navigate('/cart')}
+                  disabled={isProcessing}
+                >
                   ← Volver al carrito
                 </Button>
               </CardContent>
@@ -299,6 +384,8 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Checkout;

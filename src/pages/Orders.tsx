@@ -1,27 +1,17 @@
 
 import { useUser } from '@/contexts/UserContext';
 import { useTenant } from '@/contexts/TenantContext';
+import { useOrders } from '@/hooks/useOrders';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, ArrowLeft, ShoppingBag } from 'lucide-react';
+import { Package, ArrowLeft, ShoppingBag, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
-interface Order {
-  id: string;
-  tenantId: string;
-  items: Array<{
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-  }>;
-  total: number;
-  date: string;
-}
+import { toast } from 'sonner';
 
 const Orders = () => {
   const { user } = useUser();
   const { tenantId } = useTenant();
+  const { orders, allOrders, ordersByTenant, isLoading, error, refreshOrders } = useOrders();
 
   if (!user) {
     return (
@@ -36,30 +26,6 @@ const Orders = () => {
       </div>
     );
   }
-
-  // Obtener pedidos del localStorage
-  const getOrders = (): Order[] => {
-    try {
-      const orders = localStorage.getItem('user_orders');
-      const parsedOrders = orders ? JSON.parse(orders) : [];
-      console.log('Orders from localStorage:', parsedOrders);
-      return parsedOrders;
-    } catch (error) {
-      console.error('Error loading orders:', error);
-      return [];
-    }
-  };
-
-  const allOrders = getOrders();
-  console.log('All orders:', allOrders);
-  console.log('Current tenantId:', tenantId);
-
-  // Filtrar pedidos por tenantId si estamos en una tienda específica
-  const userOrders = tenantId 
-    ? allOrders.filter(order => order.tenantId === tenantId)
-    : allOrders;
-
-  console.log('Filtered orders for current tenant:', userOrders);
 
   const getTenantInfo = (tenant: string) => {
     switch (tenant) {
@@ -76,6 +42,15 @@ const Orders = () => {
 
   const currentTenantInfo = getTenantInfo(tenantId || '');
 
+  const handleRefresh = async () => {
+    try {
+      await refreshOrders();
+      toast.success('Pedidos actualizados');
+    } catch (error) {
+      toast.error('Error al actualizar pedidos');
+    }
+  };
+
   // Si estamos en una tienda específica, mostrar solo pedidos de esa tienda
   if (tenantId) {
     return (
@@ -91,6 +66,18 @@ const Orders = () => {
                 </Button>
               </Link>
               <h1 className="text-3xl font-bold text-gray-900">Mis Pedidos - {currentTenantInfo.name}</h1>
+              <Button 
+                onClick={handleRefresh} 
+                variant="outline" 
+                size="sm"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+              </Button>
             </div>
 
             {/* Orders for current tenant */}
@@ -103,7 +90,20 @@ const Orders = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {userOrders.length === 0 ? (
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                    <p className="text-gray-600">Cargando pedidos...</p>
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-8">
+                    <p className="text-red-600 mb-4">Error al cargar pedidos: {error}</p>
+                    <Button onClick={handleRefresh} variant="outline">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Reintentar
+                    </Button>
+                  </div>
+                ) : orders.length === 0 ? (
                   <div className="text-center py-8">
                     <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">No has realizado pedidos en {currentTenantInfo.name} aún</p>
@@ -113,24 +113,34 @@ const Orders = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {userOrders.map((order) => (
+                    {orders.map((order) => (
                       <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/50">
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <p className="text-sm text-gray-600">Pedido #{order.id.slice(-8)}</p>
-                            <p className="text-sm text-gray-500">{order.date}</p>
+                            <p className="text-sm text-gray-500">{new Date(order.fecha).toLocaleDateString('es-ES')}</p>
+                            <p className="text-xs text-gray-400">{order.direccion}</p>
                           </div>
-                          <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
+                          <div className="text-right">
+                            <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
+                            <span className={`text-xs px-2 py-1 rounded ${
+                              order.estado === 'completed' ? 'bg-green-100 text-green-700' : 
+                              order.estado === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-700'
+                            }`}>
+                              {order.estado}
+                            </span>
+                          </div>
                         </div>
                         
                         <div className="space-y-2">
-                          {order.items.map((item, index) => (
+                          {order.productos.map((item, index) => (
                             <div key={index} className="flex justify-between items-center">
                               <div>
-                                <p className="font-medium">{item.name}</p>
-                                <p className="text-sm text-gray-600">Cantidad: {item.quantity}</p>
+                                <p className="font-medium">{item.nombre}</p>
+                                <p className="text-sm text-gray-600">Cantidad: {item.cantidad}</p>
                               </div>
-                              <p className="font-semibold">S/ {(item.price * item.quantity).toFixed(2)}</p>
+                              <p className="font-semibold">S/ {(item.precio * item.cantidad).toFixed(2)}</p>
                             </div>
                           ))}
                         </div>
@@ -147,12 +157,6 @@ const Orders = () => {
   }
 
   // Vista del portal: Agrupar pedidos por tenant
-  const ordersByTenant = {
-    dogshop: allOrders.filter(order => order.tenantId === 'dogshop'),
-    catshop: allOrders.filter(order => order.tenantId === 'catshop'),
-    vetshop: allOrders.filter(order => order.tenantId === 'vetshop')
-  };
-
   return (
     <div className={`min-h-screen ${currentTenantInfo.bgColor}`}>
       <div className="container mx-auto px-4 py-8">
@@ -166,72 +170,116 @@ const Orders = () => {
               </Button>
             </Link>
             <h1 className="text-3xl font-bold text-gray-900">Mis Pedidos</h1>
+            <Button 
+              onClick={handleRefresh} 
+              variant="outline" 
+              size="sm"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4" />
+              )}
+            </Button>
           </div>
 
-          {/* Orders by Store */}
-          <div className="space-y-8">
-            {Object.entries(ordersByTenant).map(([tenant, orders]) => {
-              const tenantInfo = getTenantInfo(tenant);
-              
-              return (
-                <Card key={tenant} className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
-                  <CardHeader>
-                    <CardTitle className={`flex items-center gap-3 ${tenantInfo.textColor}`}>
-                      <span className="text-2xl">{tenantInfo.emoji}</span>
-                      <Package className="h-6 w-6" />
-                      {tenantInfo.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {orders.length === 0 ? (
-                      <div className="text-center py-8">
-                        <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <p className="text-gray-600">No has realizado pedidos en {tenantInfo.name} aún</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {orders.map((order) => (
-                          <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/50">
-                            <div className="flex justify-between items-start mb-3">
-                              <div>
-                                <p className="text-sm text-gray-600">Pedido #{order.id.slice(-8)}</p>
-                                <p className="text-sm text-gray-500">{order.date}</p>
-                              </div>
-                              <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              {order.items.map((item, index) => (
-                                <div key={index} className="flex justify-between items-center">
-                                  <div>
-                                    <p className="font-medium">{item.name}</p>
-                                    <p className="text-sm text-gray-600">Cantidad: {item.quantity}</p>
-                                  </div>
-                                  <p className="font-semibold">S/ {(item.price * item.quantity).toFixed(2)}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-
-          {allOrders.length === 0 && (
+          {/* Loading or Error State */}
+          {isLoading ? (
             <Card className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
               <CardContent className="text-center py-12">
-                <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No tienes pedidos aún</h3>
-                <p className="text-gray-600 mb-6">¡Explora nuestras tiendas y encuentra productos increíbles para tu mascota!</p>
-                <Link to="/catalogo">
-                  <Button>Explorar Productos</Button>
-                </Link>
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                <p className="text-gray-600">Cargando pedidos...</p>
               </CardContent>
             </Card>
+          ) : error ? (
+            <Card className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
+              <CardContent className="text-center py-12">
+                <p className="text-red-600 mb-4">Error al cargar pedidos: {error}</p>
+                <Button onClick={handleRefresh} variant="outline">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reintentar
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {/* Orders by Store */}
+              <div className="space-y-8">
+                {Object.entries(ordersByTenant).map(([tenant, tenantOrders]) => {
+                  const tenantInfo = getTenantInfo(tenant);
+                  
+                  return (
+                    <Card key={tenant} className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
+                      <CardHeader>
+                        <CardTitle className={`flex items-center gap-3 ${tenantInfo.textColor}`}>
+                          <span className="text-2xl">{tenantInfo.emoji}</span>
+                          <Package className="h-6 w-6" />
+                          {tenantInfo.name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {tenantOrders.length === 0 ? (
+                          <div className="text-center py-8">
+                            <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                            <p className="text-gray-600">No has realizado pedidos en {tenantInfo.name} aún</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            {tenantOrders.map((order) => (
+                              <div key={order.id} className="border border-gray-200 rounded-lg p-4 bg-white/50">
+                                <div className="flex justify-between items-start mb-3">
+                                  <div>
+                                    <p className="text-sm text-gray-600">Pedido #{order.id.slice(-8)}</p>
+                                    <p className="text-sm text-gray-500">{new Date(order.fecha).toLocaleDateString('es-ES')}</p>
+                                    <p className="text-xs text-gray-400">{order.direccion}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="font-bold text-lg">S/ {order.total.toFixed(2)}</p>
+                                    <span className={`text-xs px-2 py-1 rounded ${
+                                      order.estado === 'completed' ? 'bg-green-100 text-green-700' : 
+                                      order.estado === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                      'bg-gray-100 text-gray-700'
+                                    }`}>
+                                      {order.estado}
+                                    </span>
+                                  </div>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  {order.productos.map((item, index) => (
+                                    <div key={index} className="flex justify-between items-center">
+                                      <div>
+                                        <p className="font-medium">{item.nombre}</p>
+                                        <p className="text-sm text-gray-600">Cantidad: {item.cantidad}</p>
+                                      </div>
+                                      <p className="font-semibold">S/ {(item.precio * item.cantidad).toFixed(2)}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {allOrders.length === 0 && (
+                <Card className="glass-effect bg-white/80 backdrop-blur-md border border-white/30">
+                  <CardContent className="text-center py-12">
+                    <ShoppingBag className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No tienes pedidos aún</h3>
+                    <p className="text-gray-600 mb-6">¡Explora nuestras tiendas y encuentra productos increíbles para tu mascota!</p>
+                    <Link to="/catalogo">
+                      <Button>Explorar Productos</Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              )}
+            </>
           )}
         </div>
       </div>
